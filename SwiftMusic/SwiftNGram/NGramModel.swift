@@ -16,7 +16,7 @@ public class NGramModel {
         self.n = n
     }
     
-    public add(sequence: TokenSequence) {
+    public add(sequence: TokenSequence) -> Void {
     
     }
 }
