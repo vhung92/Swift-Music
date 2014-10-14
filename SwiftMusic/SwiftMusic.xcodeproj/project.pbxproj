@@ -16,6 +16,8 @@
 		9605E7E119DDCC55007A91ED /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9605E7E019DDCC55007A91ED /* Images.xcassets */; };
 		9605E7E419DDCC55007A91ED /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9605E7E219DDCC55007A91ED /* LaunchScreen.xib */; };
 		9605E7F019DDCC55007A91ED /* SwiftMusicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9605E7EF19DDCC55007A91ED /* SwiftMusicTests.swift */; };
+		968B1AFF19ED19E900D59385 /* NGramModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 968B1AFE19ED19E900D59385 /* NGramModel.swift */; };
+		968B1B0019ED19E900D59385 /* NGramModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 968B1AFE19ED19E900D59385 /* NGramModel.swift */; };
 		96F731CB19DDCE63008BB2C8 /* MusicEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F731C219DDCE63008BB2C8 /* MusicEvent.swift */; };
 		96F731CC19DDCE63008BB2C8 /* MIDIMetaEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F731C419DDCE63008BB2C8 /* MIDIMetaEvent.swift */; };
 		96F731CD19DDCE63008BB2C8 /* MIDINote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F731C519DDCE63008BB2C8 /* MIDINote.swift */; };
@@ -58,6 +60,7 @@
 		9605E7E919DDCC55007A91ED /* SwiftMusicTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftMusicTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9605E7EE19DDCC55007A91ED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9605E7EF19DDCC55007A91ED /* SwiftMusicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftMusicTests.swift; sourceTree = "<group>"; };
+		968B1AFE19ED19E900D59385 /* NGramModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NGramModel.swift; path = SwiftNGram/NGramModel.swift; sourceTree = SOURCE_ROOT; };
 		96F731C219DDCE63008BB2C8 /* MusicEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicEvent.swift; sourceTree = "<group>"; };
 		96F731C419DDCE63008BB2C8 /* MIDIMetaEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIMetaEvent.swift; sourceTree = "<group>"; };
 		96F731C519DDCE63008BB2C8 /* MIDINote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINote.swift; sourceTree = "<group>"; };
@@ -91,6 +94,7 @@
 		9605E7C819DDCC55007A91ED = {
 			isa = PBXGroup;
 			children = (
+				968B1AFD19ED198A00D59385 /* NGram */,
 				96F731C019DDCE63008BB2C8 /* SwiftAudioToolbox */,
 				9605E7D319DDCC55007A91ED /* SwiftMusic */,
 				9605E7EC19DDCC55007A91ED /* SwiftMusicTests */,
@@ -145,6 +149,15 @@
 				9605E7EE19DDCC55007A91ED /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		968B1AFD19ED198A00D59385 /* NGram */ = {
+			isa = PBXGroup;
+			children = (
+				968B1AFE19ED19E900D59385 /* NGramModel.swift */,
+			);
+			name = NGram;
+			path = SwiftMusic;
 			sourceTree = "<group>";
 		};
 		96F731C019DDCE63008BB2C8 /* SwiftAudioToolbox */ = {
@@ -287,6 +300,7 @@
 				96F731D019DDCE63008BB2C8 /* SwiftMusicTrack.swift in Sources */,
 				96F731CE19DDCE63008BB2C8 /* SwiftAudioToolboxResultCodes.swift in Sources */,
 				96F731CF19DDCE63008BB2C8 /* SwiftMusicSequence.swift in Sources */,
+				968B1AFF19ED19E900D59385 /* NGramModel.swift in Sources */,
 				9605E7D719DDCC55007A91ED /* AppDelegate.swift in Sources */,
 				9600F54319DDDCC200E5F165 /* UnimplementedMusicEvent.swift in Sources */,
 				96F731CD19DDCE63008BB2C8 /* MIDINote.swift in Sources */,
@@ -304,6 +318,7 @@
 				96F731D919DDCF40008BB2C8 /* SwiftAudioToolbox_Tests.swift in Sources */,
 				96F731DB19DDCF6A008BB2C8 /* SwiftMusicTrack.swift in Sources */,
 				96F731DE19DDD421008BB2C8 /* MIDINote.swift in Sources */,
+				968B1B0019ED19E900D59385 /* NGramModel.swift in Sources */,
 				96F731DC19DDCF6D008BB2C8 /* SwiftAudioToolboxResultCodes.swift in Sources */,
 				9600F54419DDDCC200E5F165 /* UnimplementedMusicEvent.swift in Sources */,
 				96F731DD19DDCFFC008BB2C8 /* MusicEvent.swift in Sources */,
