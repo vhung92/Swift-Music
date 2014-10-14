@@ -18,6 +18,8 @@
 		9605E7F019DDCC55007A91ED /* SwiftMusicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9605E7EF19DDCC55007A91ED /* SwiftMusicTests.swift */; };
 		968B1AFF19ED19E900D59385 /* NGramModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 968B1AFE19ED19E900D59385 /* NGramModel.swift */; };
 		968B1B0019ED19E900D59385 /* NGramModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 968B1AFE19ED19E900D59385 /* NGramModel.swift */; };
+		968B1B0819ED716F00D59385 /* Probabilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 968B1B0719ED716F00D59385 /* Probabilities.swift */; };
+		968B1B0919ED716F00D59385 /* Probabilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 968B1B0719ED716F00D59385 /* Probabilities.swift */; };
 		96F731CB19DDCE63008BB2C8 /* MusicEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F731C219DDCE63008BB2C8 /* MusicEvent.swift */; };
 		96F731CC19DDCE63008BB2C8 /* MIDIMetaEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F731C419DDCE63008BB2C8 /* MIDIMetaEvent.swift */; };
 		96F731CD19DDCE63008BB2C8 /* MIDINote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F731C519DDCE63008BB2C8 /* MIDINote.swift */; };
@@ -61,6 +63,7 @@
 		9605E7EE19DDCC55007A91ED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9605E7EF19DDCC55007A91ED /* SwiftMusicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftMusicTests.swift; sourceTree = "<group>"; };
 		968B1AFE19ED19E900D59385 /* NGramModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NGramModel.swift; path = SwiftNGram/NGramModel.swift; sourceTree = SOURCE_ROOT; };
+		968B1B0719ED716F00D59385 /* Probabilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Probabilities.swift; path = SwiftNGram/Probabilities.swift; sourceTree = SOURCE_ROOT; };
 		96F731C219DDCE63008BB2C8 /* MusicEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicEvent.swift; sourceTree = "<group>"; };
 		96F731C419DDCE63008BB2C8 /* MIDIMetaEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIMetaEvent.swift; sourceTree = "<group>"; };
 		96F731C519DDCE63008BB2C8 /* MIDINote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINote.swift; sourceTree = "<group>"; };
@@ -154,6 +157,7 @@
 		968B1AFD19ED198A00D59385 /* NGram */ = {
 			isa = PBXGroup;
 			children = (
+				968B1B0719ED716F00D59385 /* Probabilities.swift */,
 				968B1AFE19ED19E900D59385 /* NGramModel.swift */,
 			);
 			name = NGram;
@@ -303,6 +307,7 @@
 				968B1AFF19ED19E900D59385 /* NGramModel.swift in Sources */,
 				9605E7D719DDCC55007A91ED /* AppDelegate.swift in Sources */,
 				9600F54319DDDCC200E5F165 /* UnimplementedMusicEvent.swift in Sources */,
+				968B1B0819ED716F00D59385 /* Probabilities.swift in Sources */,
 				96F731CD19DDCE63008BB2C8 /* MIDINote.swift in Sources */,
 				96F731CB19DDCE63008BB2C8 /* MusicEvent.swift in Sources */,
 				96F731CC19DDCE63008BB2C8 /* MIDIMetaEvent.swift in Sources */,
@@ -321,6 +326,7 @@
 				968B1B0019ED19E900D59385 /* NGramModel.swift in Sources */,
 				96F731DC19DDCF6D008BB2C8 /* SwiftAudioToolboxResultCodes.swift in Sources */,
 				9600F54419DDDCC200E5F165 /* UnimplementedMusicEvent.swift in Sources */,
+				968B1B0919ED716F00D59385 /* Probabilities.swift in Sources */,
 				96F731DD19DDCFFC008BB2C8 /* MusicEvent.swift in Sources */,
 				96F731D819DDCED8008BB2C8 /* SwiftMusicSequence_Test.swift in Sources */,
 				96F731DA19DDCF67008BB2C8 /* SwiftMusicSequence.swift in Sources */,
