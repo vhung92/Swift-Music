@@ -20,3 +20,16 @@ public class NGramModel {
     
     }
 }
+
+public class prefix: Hashable {
+    let tokenArray:[String]
+    
+    init(tokenArray:[String]) {
+        self.tokenArray = tokenArray
+    }
+    
+    var hashValue: Int {
+        return join("", tokenArray).hashValue
+    }
+}
+
