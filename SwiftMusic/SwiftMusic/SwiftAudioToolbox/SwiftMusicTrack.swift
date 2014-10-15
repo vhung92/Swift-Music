@@ -30,7 +30,8 @@ public class SwiftMusicTrack {
         
         return Float(length)
     }
-    
+
+    public
 }
 
 public class MusicEventSequence:SequenceType {
