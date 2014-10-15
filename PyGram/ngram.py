@@ -1,4 +1,5 @@
 import operator
+import random
 
 
 class NGram:
@@ -7,11 +8,12 @@ class NGram:
         """
         Initializes a new NGram object with
         :param n: number of grams (i.e. bi-gram, tri-gram, etc.)
-        :return: an NGram oject
+        :return: an NGram object
         """
         self.total = 0  # total number of added grams
         self.n = n  # n of n-gram (i.e. bi-gram)
         self.grams = {}  # dictionary in dictionary: n-gram -> next token -> frequency
+        self.beginnings = []  # list of all possible begin vectors
 
     def add(self, sequence):
         """
@@ -19,6 +21,8 @@ class NGram:
         :param sequence: list of tokens
         :return: void
         """
+        beginning = tuple(sequence[:self.n])
+        self.beginnings.append(beginning)
         for i in range(len(sequence) - self.n):
             self.total += 1  # increment for each new gram added to the model
             new_gram = tuple(sequence[i:i + self.n])
@@ -43,12 +47,23 @@ class NGram:
         for i in range(max_iterations):
             if current in self.grams:
                 possible_next = self.grams[current]
-                temp_next = max(possible_next.iteritems(), key=operator.itemgetter(1))[0]
+                #temp_next = max(possible_next.iteritems(), key=operator.itemgetter(1))[0]  # max choice
+                temp_next = random.choice(possible_next.keys())  # random choice
                 output.append(temp_next)
                 current = tuple(output[-self.n:])
             else:
                 break
         return output
+
+    @staticmethod
+    def weighted_choice(choices):
+        total = sum(w for c, w in choices)
+        r = random.uniform(0, total)
+        up_to = 0
+        for c, w in choices:
+            if up_to + w > r:
+                return c
+            up_to += w
 
     def probability(self, gram):
         """
