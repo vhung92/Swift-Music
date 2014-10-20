@@ -22,6 +22,9 @@
 		96607ED819EEA28E002E1456 /* Probabilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96607ED319EEA28E002E1456 /* Probabilities.swift */; };
 		96607EDA19EEA28E002E1456 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96607ED419EEA28E002E1456 /* Token.swift */; };
 		96607EDC19EEA7B0002E1456 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96607ED419EEA28E002E1456 /* Token.swift */; };
+		96607EDE19EFCCFD002E1456 /* Trie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96607EDD19EFCCFD002E1456 /* Trie.swift */; };
+		96607EDF19EFCCFD002E1456 /* Trie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96607EDD19EFCCFD002E1456 /* Trie.swift */; };
+		96AC89E619EFED1A0062B97E /* NGramModel_Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AC89E519EFED1A0062B97E /* NGramModel_Test.swift */; };
 		96F731CB19DDCE63008BB2C8 /* MusicEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F731C219DDCE63008BB2C8 /* MusicEvent.swift */; };
 		96F731CC19DDCE63008BB2C8 /* MIDIMetaEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F731C419DDCE63008BB2C8 /* MIDIMetaEvent.swift */; };
 		96F731CD19DDCE63008BB2C8 /* MIDINote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F731C519DDCE63008BB2C8 /* MIDINote.swift */; };
@@ -67,6 +70,8 @@
 		96607ED219EEA28E002E1456 /* NGramModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NGramModel.swift; sourceTree = "<group>"; };
 		96607ED319EEA28E002E1456 /* Probabilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Probabilities.swift; sourceTree = "<group>"; };
 		96607ED419EEA28E002E1456 /* Token.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
+		96607EDD19EFCCFD002E1456 /* Trie.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Trie.swift; sourceTree = "<group>"; };
+		96AC89E519EFED1A0062B97E /* NGramModel_Test.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NGramModel_Test.swift; sourceTree = "<group>"; };
 		96F731C219DDCE63008BB2C8 /* MusicEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicEvent.swift; sourceTree = "<group>"; };
 		96F731C419DDCE63008BB2C8 /* MIDIMetaEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIMetaEvent.swift; sourceTree = "<group>"; };
 		96F731C519DDCE63008BB2C8 /* MIDINote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINote.swift; sourceTree = "<group>"; };
@@ -106,6 +111,7 @@
 				9605E7EC19DDCC55007A91ED /* SwiftMusicTests */,
 				9605E7D219DDCC55007A91ED /* Products */,
 				96F731D119DDCE89008BB2C8 /* SwiftAudioToolbox Tests */,
+				96AC89E419EFECDE0062B97E /* SwiftNGramTests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -161,11 +167,21 @@
 			isa = PBXGroup;
 			children = (
 				96607ED219EEA28E002E1456 /* NGramModel.swift */,
+				96607EDD19EFCCFD002E1456 /* Trie.swift */,
 				96607ED319EEA28E002E1456 /* Probabilities.swift */,
 				96607ED419EEA28E002E1456 /* Token.swift */,
 			);
 			name = SwiftNGram;
 			path = SwiftMusic/SwiftNGram;
+			sourceTree = "<group>";
+		};
+		96AC89E419EFECDE0062B97E /* SwiftNGramTests */ = {
+			isa = PBXGroup;
+			children = (
+				96AC89E519EFED1A0062B97E /* NGramModel_Test.swift */,
+			);
+			name = SwiftNGramTests;
+			path = SwiftMusic/SwiftNGram/Tests;
 			sourceTree = "<group>";
 		};
 		96F731C019DDCE63008BB2C8 /* SwiftAudioToolbox */ = {
@@ -309,6 +325,7 @@
 				9605E7DC19DDCC55007A91ED /* ViewController.swift in Sources */,
 				96F731D019DDCE63008BB2C8 /* SwiftMusicTrack.swift in Sources */,
 				96F731CE19DDCE63008BB2C8 /* SwiftAudioToolboxResultCodes.swift in Sources */,
+				96607EDE19EFCCFD002E1456 /* Trie.swift in Sources */,
 				96F731CF19DDCE63008BB2C8 /* SwiftMusicSequence.swift in Sources */,
 				96607ED519EEA28E002E1456 /* NGramModel.swift in Sources */,
 				9605E7D719DDCC55007A91ED /* AppDelegate.swift in Sources */,
@@ -329,12 +346,14 @@
 				96F731DF19DDD423008BB2C8 /* MIDIMetaEvent.swift in Sources */,
 				96F731D919DDCF40008BB2C8 /* SwiftAudioToolbox_Tests.swift in Sources */,
 				96F731DB19DDCF6A008BB2C8 /* SwiftMusicTrack.swift in Sources */,
+				96607EDF19EFCCFD002E1456 /* Trie.swift in Sources */,
 				96F731DE19DDD421008BB2C8 /* MIDINote.swift in Sources */,
 				96607ED619EEA28E002E1456 /* NGramModel.swift in Sources */,
 				96F731DC19DDCF6D008BB2C8 /* SwiftAudioToolboxResultCodes.swift in Sources */,
 				9600F54419DDDCC200E5F165 /* UnimplementedMusicEvent.swift in Sources */,
 				96607ED819EEA28E002E1456 /* Probabilities.swift in Sources */,
 				96F731DD19DDCFFC008BB2C8 /* MusicEvent.swift in Sources */,
+				96AC89E619EFED1A0062B97E /* NGramModel_Test.swift in Sources */,
 				96F731D819DDCED8008BB2C8 /* SwiftMusicSequence_Test.swift in Sources */,
 				96F731DA19DDCF67008BB2C8 /* SwiftMusicSequence.swift in Sources */,
 				96607EDA19EEA28E002E1456 /* Token.swift in Sources */,

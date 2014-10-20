@@ -6,20 +6,102 @@
 //  Copyright (c) 2014 Swift Generation. All rights reserved.
 //
 
+typealias Frequency = UInt64
+
 public class NGramModel {
+    
     private let n: Int
-    private var nGrams: [Prefix: [Token:Int]] = [:]
+    private var nTrie = TrieBranch()
     
     public init(n: Int) {
         self.n = n
     }
     
-    public func add(tokens: [Token]) {
+//    public func train<S>(tokens: LazySequence<MapSequenceView<S, Token>>) {
+//        var nGram:[Token] = []
+//        
+//        for token in tokens {
+//            nGram.append(token)
+//            
+//            while nGram.count > n {
+//                nGram.removeAtIndex(0)
+//            }
+//            
+//            if nGram.count == n {
+//                addNGram(nGram)
+//            }
+//        }
+//        
+//        while nGram.count > 0 {
+//            nGram.removeAtIndex(0)
+//            addNGram(nGram)
+//        }
+//    }
+    
+    public func train(tokens:[Token]) {
+        var nGram:[Token] = []
         
+        for token in tokens {
+            nGram.append(token)
+            
+            while nGram.count > n {
+                nGram.removeAtIndex(0)
+            }
+            
+            if nGram.count == n {
+                addNGram(nGram)
+            }
+        }
+        
+        while nGram.count > 0 {
+            nGram.removeAtIndex(0)
+            addNGram(nGram)
+        }
+    }
+    
+    private func addNGram(nGram:[Token]) {
+        assert(nGram.count <= n, "nGram count was \(nGram.count) (should be \(n)")
+        
+        nTrie.add(nGram)
+    }
+    
+    public func generate(nTokens: Int, fromStart startSequence:[Token]) -> [Token] {
+        var result: [Token] = []
+        result.reserveCapacity(nTokens + startSequence.count)
+        
+        var prefix = startSequence
+        for _ in 1...nTokens {
+            while prefix.count > n {
+                result.append(prefix.removeAtIndex(0))
+            }
+            var successorDistribution = nTrie.successorDistributionOf(prefix)
+            if successorDistribution.count == 0 {
+                // Generate a random token
+                successorDistribution = nTrie.successorDistributionOf([])
+            }
+            if successorDistribution.count == 0 {
+                fatalError("Tried to generate from empty NGramModel")
+            }
+            let generatedToken = tokenFromDistribution(successorDistribution)
+            prefix.append(generatedToken)
+        }
+        result += prefix
+        return result
+    }
+    
+    func tokenFromDistribution(tokenDistribution: [(Token,Frequency)]) -> Token {
+        let frequencies:[Double] = map(tokenDistribution) { Double($0.1) }
+        let randomIndex = randomIndexFromDistribution(frequencies)
+        let token = tokenDistribution[randomIndex].0
+        return token
+    }
+    
+    func frequencyOf(gram:[Token]) -> Frequency {
+        return nTrie.frequencyOf(gram);
     }
 }
 
-public class Prefix: Hashable {
+public struct Prefix: Hashable {
     let tokens:[Token]
     var length: Int {
         return tokens.count

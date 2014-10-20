@@ -9,9 +9,13 @@
 import Foundation
 
 public struct Token: Hashable {
-    let content:Int8
+    let content:Int
     
-    var hashValue: Int {
+    static func transformSequence<S: SequenceType, Token>(source: LazySequence<S>, transform: S.Generator.Element -> Token) -> LazySequence<MapSequenceView<S, Token>> {
+        return source.map(transform)
+    }
+    
+    public var hashValue: Int {
         return Int(content)
     }
 }
