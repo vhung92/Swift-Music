@@ -21,7 +21,6 @@ class NGramModelTest: XCTestCase {
     }
 
     func testWithShortString() {
-        // This is an example of a functional test case.
         let model = NGramModel(n: 7)
         let tokens = Token.arrayFromString("hellothere")
         XCTAssertEqual(tokens.count, 10)
@@ -37,11 +36,30 @@ class NGramModelTest: XCTestCase {
         let he = Token.arrayFromString("he")
         XCTAssertEqual(he.count, 2)
         XCTAssertEqual(model.frequencyOf(he), Frequency(2))
+        let th = Token.arrayFromString("th")
+        XCTAssertEqual(model.frequencyOf(th), Frequency(1))
         let hel = Token.arrayFromString("hel")
         XCTAssertEqual(hel.count, 3)
         XCTAssertEqual(model.frequencyOf(hel), Frequency(1))
+        let helloth = Token.arrayFromString("helloth")
+        XCTAssertEqual(model.frequencyOf(helloth), Frequency(1))
         let hellothere = tokens
         XCTAssertEqual(model.frequencyOf(tokens), Frequency(0))
+    }
+    
+    func testGeneration() {
+        let model = NGramModel(n: 3)
+        let corpus = " hello there fancy seeing you here, what takes you to town "
+        let tokens = Token.arrayFromString(" hello there fancy seeing you here, what takes you to town ")
+        model.train(tokens)
+        
+        let longGeneration = model.generate(10000, fromStart: [])
+        XCTAssertEqual(longGeneration.count, 10000)
+        let longGenerationString = Token.arrayToString(longGeneration)
+        let endOfCorpus = suffix(corpus, 5)
+        XCTAssert(longGenerationString.rangeOfString(endOfCorpus) != nil, "Generation did not generate \"\(endOfCorpus)\" in 10000 characters. (Highly unlikely).")
+        let impossibleCombo = "ww"
+        XCTAssert(longGenerationString.rangeOfString(impossibleCombo) == nil, "\(impossibleCombo) should never be generated but was: \(longGenerationString)")
     }
 
     func testPerformanceExample() {
@@ -68,5 +86,10 @@ extension Token {
         let corpus = string.unicodeScalars
         let tokens = map(corpus) { Token(content: Int($0.value)) }
         return tokens
+    }
+    
+    static func arrayToString(array:[Token]) -> String {
+        let scalars = map(array) { Character(UnicodeScalar($0.content)) }
+        return String(scalars)
     }
 }

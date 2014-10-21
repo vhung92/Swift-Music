@@ -71,16 +71,17 @@ public class NGramModel {
         
         var prefix = startSequence
         for _ in 1...nTokens {
-            while prefix.count > n {
+            while prefix.count >= n {
                 result.append(prefix.removeAtIndex(0))
             }
             var successorDistribution = nTrie.successorDistributionOf(prefix)
-            if successorDistribution.count == 0 {
-                // Generate a random token
-                successorDistribution = nTrie.successorDistributionOf([])
-            }
-            if successorDistribution.count == 0 {
-                fatalError("Tried to generate from empty NGramModel")
+            while successorDistribution.count == 0 {
+                if prefix.count == 0 {
+                    fatalError("Tried to generate from empty NGramModel")
+                }
+                // Lower the insight until low enough that the prefix can be found
+                result.append(prefix.removeAtIndex(0))
+                successorDistribution = nTrie.successorDistributionOf(prefix)
             }
             let generatedToken = tokenFromDistribution(successorDistribution)
             prefix.append(generatedToken)

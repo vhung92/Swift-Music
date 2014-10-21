@@ -41,6 +41,19 @@ class SwiftMusicSequenceTest: XCTestCase {
         XCTAssertNotEqual(musicTrack.trackLength, Float(0))
         XCTAssertNotEqual(nEvents, 0)
     }
+    
+    func testWriteToMIDIFile() {
+        let fileManager = NSFileManager.defaultManager()
+        
+        let bundle = NSBundle(forClass: self.dynamicType)
+        let path = bundle.pathForResource("test", ofType:"mid")
+        let testMidi = NSData(contentsOfFile: path!)
+        let musicSequence = SwiftMusicSequence(midiData: testMidi!)
+        XCTAssertEqual(musicSequence.trackCount, 13)
+        
+        let destinationPath = NSURL(fileURLWithPath: "/tmp/test.mid")
+        musicSequence.writeToMIDIFile(destinationPath!)
+    }
 
     func testPerformanceExample() {
         // This is an example of a performance test case.

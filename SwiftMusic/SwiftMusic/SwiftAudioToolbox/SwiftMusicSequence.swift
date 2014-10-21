@@ -10,7 +10,7 @@ import Foundation
 import AudioToolbox
 
 public class SwiftMusicSequence {
-    private let cMusicSequence: MusicSequence
+    let cMusicSequence: MusicSequence
     
     public var trackCount: Int {
         get {
@@ -41,10 +41,29 @@ public class SwiftMusicSequence {
         assert(0 <= index && index <= self.trackCount, "SwiftMusicSequence track index out of bounds: \(index)")
         var cMusicTrack: MusicTrack = MusicTrack()
         MusicSequenceGetIndTrack(cMusicSequence, UInt32(index), &cMusicTrack)
-        return SwiftMusicTrack(cMusicTrack: cMusicTrack)
+        return SwiftMusicTrack(cMusicTrack: cMusicTrack, musicSequence: self)
+    }
+    
+    public func newTrack() -> SwiftMusicTrack {
+        var cMusicTrack: MusicTrack = MusicTrack()
+        MusicSequenceNewTrack(cMusicSequence, &cMusicTrack)
+        return SwiftMusicTrack(cMusicTrack: cMusicTrack, musicSequence: self)
+    }
+    
+    public func writeToMIDIFile(fileURL:NSURL) {
+        MusicSequenceFileCreate(self.cMusicSequence, fileURL, MusicSequenceFileTypeID(kMusicSequenceFile_MIDIType), MusicSequenceFileFlags(kMusicSequenceFileFlags_EraseFile), 0)
     }
     
     deinit {
+        var tracks:UInt32 = 0
+        MusicSequenceGetTrackCount(cMusicSequence, &tracks)
+        
+        for i in 0..<tracks {
+            var cMusicTrack = MusicTrack()
+            MusicSequenceGetIndTrack(cMusicSequence, i, &cMusicTrack)
+            MusicSequenceDisposeTrack(cMusicSequence, cMusicTrack)
+        }
+        
         DisposeMusicSequence(cMusicSequence)
     }
 }

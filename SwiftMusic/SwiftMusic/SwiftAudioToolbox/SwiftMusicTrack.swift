@@ -12,9 +12,11 @@ import Swift
 
 public class SwiftMusicTrack {
     private let cMusicTrack:MusicTrack
+    public let musicSequence:SwiftMusicSequence
     
-    init(cMusicTrack:MusicTrack){
+    init(cMusicTrack:MusicTrack, musicSequence: SwiftMusicSequence){
         self.cMusicTrack = cMusicTrack
+        self.musicSequence = musicSequence
     }
     
     public var events:MusicEventSequence {
@@ -31,7 +33,13 @@ public class SwiftMusicTrack {
         return Float(length)
     }
 
-
+    public func addMusicEvent(musicEvent: MusicEvent) {
+        if let midiNote = musicEvent as? MIDINote {
+            let timestamp:MusicTimeStamp = Float64(midiNote.timestamp)
+            var cMIDINoteMessage = midiNote.cMIDINoteMessage
+            MusicTrackNewMIDINoteEvent(cMusicTrack, timestamp, &cMIDINoteMessage)
+        }
+    }
 }
 
 public class MusicEventSequence:SequenceType {

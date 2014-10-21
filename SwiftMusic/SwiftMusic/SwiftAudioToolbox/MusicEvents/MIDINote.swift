@@ -10,6 +10,7 @@ import Foundation
 import AudioToolbox
 
 public class MIDINote:MusicEvent, Printable {
+    public let channel:UInt8
     public let note:UInt8
     public let duration:Float32
     public let velocity:UInt8
@@ -20,6 +21,7 @@ public class MIDINote:MusicEvent, Printable {
     }
     
     init(timestamp:MusicTimeStamp, cMIDINoteMessage:MIDINoteMessage) {
+        channel = cMIDINoteMessage.channel
         note = cMIDINoteMessage.note
         duration = cMIDINoteMessage.duration
         velocity = cMIDINoteMessage.velocity
@@ -27,5 +29,12 @@ public class MIDINote:MusicEvent, Printable {
         super.init(timestamp: Float(timestamp))
     }
     
-    
+    var cMIDINoteMessage: MIDINoteMessage {
+        return MIDINoteMessage(
+            channel: self.channel,
+            note: self.note,
+            velocity: self.velocity,
+            releaseVelocity: self.releaseVelocity,
+            duration: self.duration)
+    }
 }
