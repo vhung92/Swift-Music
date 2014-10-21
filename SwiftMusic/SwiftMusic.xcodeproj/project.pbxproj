@@ -16,6 +16,11 @@
 		9605E7E119DDCC55007A91ED /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9605E7E019DDCC55007A91ED /* Images.xcassets */; };
 		9605E7E419DDCC55007A91ED /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9605E7E219DDCC55007A91ED /* LaunchScreen.xib */; };
 		9605E7F019DDCC55007A91ED /* SwiftMusicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9605E7EF19DDCC55007A91ED /* SwiftMusicTests.swift */; };
+		963E2D5219F68E4A005DAC8E /* EndlessMIDIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 963E2D5119F68E4A005DAC8E /* EndlessMIDIView.swift */; };
+		963E2D5319F68E4A005DAC8E /* EndlessMIDIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 963E2D5119F68E4A005DAC8E /* EndlessMIDIView.swift */; };
+		963E2D5519F6922B005DAC8E /* acoustic_grand_piano_ydp_20080910.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = 963E2D5419F6922B005DAC8E /* acoustic_grand_piano_ydp_20080910.sf2 */; };
+		963E2D5619F6922B005DAC8E /* acoustic_grand_piano_ydp_20080910.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = 963E2D5419F6922B005DAC8E /* acoustic_grand_piano_ydp_20080910.sf2 */; };
+		963E2D5819F69516005DAC8E /* EndlessMIDIView_Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 963E2D5719F69516005DAC8E /* EndlessMIDIView_Test.swift */; };
 		96607ED519EEA28E002E1456 /* NGramModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96607ED219EEA28E002E1456 /* NGramModel.swift */; };
 		96607ED619EEA28E002E1456 /* NGramModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96607ED219EEA28E002E1456 /* NGramModel.swift */; };
 		96607ED719EEA28E002E1456 /* Probabilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96607ED319EEA28E002E1456 /* Probabilities.swift */; };
@@ -67,6 +72,9 @@
 		9605E7E919DDCC55007A91ED /* SwiftMusicTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftMusicTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9605E7EE19DDCC55007A91ED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9605E7EF19DDCC55007A91ED /* SwiftMusicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftMusicTests.swift; sourceTree = "<group>"; };
+		963E2D5119F68E4A005DAC8E /* EndlessMIDIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EndlessMIDIView.swift; sourceTree = "<group>"; };
+		963E2D5419F6922B005DAC8E /* acoustic_grand_piano_ydp_20080910.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = acoustic_grand_piano_ydp_20080910.sf2; sourceTree = "<group>"; };
+		963E2D5719F69516005DAC8E /* EndlessMIDIView_Test.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EndlessMIDIView_Test.swift; path = ../SwiftMusic/EndlessMIDIView_Test.swift; sourceTree = "<group>"; };
 		96607ED219EEA28E002E1456 /* NGramModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NGramModel.swift; sourceTree = "<group>"; };
 		96607ED319EEA28E002E1456 /* Probabilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Probabilities.swift; sourceTree = "<group>"; };
 		96607ED419EEA28E002E1456 /* Token.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
@@ -127,8 +135,10 @@
 		9605E7D319DDCC55007A91ED /* SwiftMusic */ = {
 			isa = PBXGroup;
 			children = (
+				963E2D5419F6922B005DAC8E /* acoustic_grand_piano_ydp_20080910.sf2 */,
 				9605E7D619DDCC55007A91ED /* AppDelegate.swift */,
 				9605E7DB19DDCC55007A91ED /* ViewController.swift */,
+				963E2D5119F68E4A005DAC8E /* EndlessMIDIView.swift */,
 				9605E7DD19DDCC55007A91ED /* Main.storyboard */,
 				9605E7E019DDCC55007A91ED /* Images.xcassets */,
 				9605E7E219DDCC55007A91ED /* LaunchScreen.xib */,
@@ -149,6 +159,7 @@
 		9605E7EC19DDCC55007A91ED /* SwiftMusicTests */ = {
 			isa = PBXGroup;
 			children = (
+				963E2D5719F69516005DAC8E /* EndlessMIDIView_Test.swift */,
 				9605E7EF19DDCC55007A91ED /* SwiftMusicTests.swift */,
 				9605E7ED19DDCC55007A91ED /* Supporting Files */,
 			);
@@ -300,6 +311,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9605E7DF19DDCC55007A91ED /* Main.storyboard in Resources */,
+				963E2D5519F6922B005DAC8E /* acoustic_grand_piano_ydp_20080910.sf2 in Resources */,
 				96F731E119DDD4F6008BB2C8 /* test.mid in Resources */,
 				9605E7E419DDCC55007A91ED /* LaunchScreen.xib in Resources */,
 				96F731D419DDCE89008BB2C8 /* Info.plist in Resources */,
@@ -312,6 +324,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				96F731E219DDD4F6008BB2C8 /* test.mid in Resources */,
+				963E2D5619F6922B005DAC8E /* acoustic_grand_piano_ydp_20080910.sf2 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -324,6 +337,7 @@
 			files = (
 				9605E7DC19DDCC55007A91ED /* ViewController.swift in Sources */,
 				96F731D019DDCE63008BB2C8 /* SwiftMusicTrack.swift in Sources */,
+				963E2D5219F68E4A005DAC8E /* EndlessMIDIView.swift in Sources */,
 				96F731CE19DDCE63008BB2C8 /* SwiftAudioToolboxResultCodes.swift in Sources */,
 				96607EDE19EFCCFD002E1456 /* Trie.swift in Sources */,
 				96F731CF19DDCE63008BB2C8 /* SwiftMusicSequence.swift in Sources */,
@@ -355,8 +369,10 @@
 				96F731DD19DDCFFC008BB2C8 /* MusicEvent.swift in Sources */,
 				96AC89E619EFED1A0062B97E /* NGramModel_Test.swift in Sources */,
 				96F731D819DDCED8008BB2C8 /* SwiftMusicSequence_Test.swift in Sources */,
+				963E2D5319F68E4A005DAC8E /* EndlessMIDIView.swift in Sources */,
 				96F731DA19DDCF67008BB2C8 /* SwiftMusicSequence.swift in Sources */,
 				96607EDA19EEA28E002E1456 /* Token.swift in Sources */,
+				963E2D5819F69516005DAC8E /* EndlessMIDIView_Test.swift in Sources */,
 				9605E7F019DDCC55007A91ED /* SwiftMusicTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
