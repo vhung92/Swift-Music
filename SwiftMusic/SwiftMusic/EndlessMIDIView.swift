@@ -26,7 +26,7 @@ public class EndlessMIDIView {
         engine.connect(sampler, to: engine.outputNode, format: nil)
         
         
-        let soundbank = NSBundle.mainBundle().URLForResource("acoustic_grand_piano_ydp_20080910", withExtension: "sf2")
+        let soundbank = NSBundle.mainBundle().URLForResource("SoundFonts/YAMAHA DX7Piano", withExtension: "sf2")
         let melodicBank = UInt8(kAUSampler_DefaultMelodicBankMSB)
         var error:NSError?
         if !sampler.loadSoundBankInstrumentAtURL(soundbank, program: 0, bankMSB: melodicBank, bankLSB: 0, error: &error) {
@@ -39,6 +39,7 @@ public class EndlessMIDIView {
     
     public func startNote(note:UInt8, withVelocity: UInt8, onChannel: UInt8) {
         sampler.startNote(note, withVelocity: withVelocity, onChannel: onChannel)
+
     }
     
     public func stopNote(note:UInt8, onChannel:UInt8) {
