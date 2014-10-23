@@ -9,7 +9,7 @@
 import Foundation
 
 class MIDIGenerator {
-    var prefix:[MIDINote] = []
+    private var prefix:[MIDINote] = []
     var generating:Bool = false {
         didSet {
             if oldValue != generating && generating == true {
@@ -28,6 +28,15 @@ class MIDIGenerator {
         nGram = NGramModel(n: maxN)
         durationMap = DurationMapper(maxMappings: UInt64(maxDurations))
         self.receptor = midiReceptor
+    }
+    
+    func extendPrefixWith(notes:[MIDINote]) {
+        self.prefix += notes
+        let maxLength = nGram.n - 1
+        let charactersTooMany = prefix.count - maxLength
+        if charactersTooMany > 0 {
+            prefix.removeRange(0..<charactersTooMany)
+        }
     }
     
     func trainWith(musicSequence:SwiftMusicSequence, var consideringTracks tracks:[Int]) {
@@ -70,6 +79,8 @@ class MIDIGenerator {
             let tokenPrefix = prefix.map { self.toAbsoluteToken($0, includeDuration: true) }
             let tokenResult = nGram.generateNextFromPrefix(tokenPrefix)
             let note = fromAbsoluteToken(tokenResult, timestamp: 0)
+            
+            self.extendPrefixWith([note])
             
             let timeTilNextNote = note.duration
             let timeTilNextNoteInNanos = Int64(Float64(timeTilNextNote) * Float64(secondsPerDurationUnit) * Float64(NSEC_PER_SEC))

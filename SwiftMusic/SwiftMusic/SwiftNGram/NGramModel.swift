@@ -10,7 +10,7 @@ typealias Frequency = UInt64
 
 public class NGramModel {
     
-    private let n: Int
+    public let n: Int
     private var nTrie = TrieBranch()
     
     public init(n: Int) {
