@@ -17,28 +17,7 @@ public class NGramModel {
         self.n = n
     }
     
-//    public func train<S>(tokens: LazySequence<MapSequenceView<S, Token>>) {
-//        var nGram:[Token] = []
-//        
-//        for token in tokens {
-//            nGram.append(token)
-//            
-//            while nGram.count > n {
-//                nGram.removeAtIndex(0)
-//            }
-//            
-//            if nGram.count == n {
-//                addNGram(nGram)
-//            }
-//        }
-//        
-//        while nGram.count > 0 {
-//            nGram.removeAtIndex(0)
-//            addNGram(nGram)
-//        }
-//    }
-    
-    public func train(tokens:[Token]) {
+    public func train(tokens: SequenceOf<Token>) {
         var nGram:[Token] = []
         
         for token in tokens {
@@ -57,6 +36,10 @@ public class NGramModel {
             nGram.removeAtIndex(0)
             addNGram(nGram)
         }
+    }
+    
+    public func train(tokens:[Token]) {
+        self.train(SequenceOf<Token>(tokens))
     }
     
     private func addNGram(nGram:[Token]) {
