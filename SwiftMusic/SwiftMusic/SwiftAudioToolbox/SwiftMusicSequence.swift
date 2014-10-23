@@ -54,6 +54,10 @@ public class SwiftMusicSequence {
         MusicSequenceFileCreate(self.cMusicSequence, fileURL, MusicSequenceFileTypeID(kMusicSequenceFile_MIDIType), MusicSequenceFileFlags(kMusicSequenceFileFlags_EraseFile), 0)
     }
     
+    public func print() {
+        CAShow(UnsafeMutablePointer<Void>(cMusicSequence))
+    }
+    
     deinit {
         var tracks:UInt32 = 0
         MusicSequenceGetTrackCount(cMusicSequence, &tracks)

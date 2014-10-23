@@ -21,9 +21,18 @@ class SwiftMusicTests: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
-        // This is an example of a functional test case.
-        XCTAssert(true, "Pass")
+    func testDurationMapper() {
+        let mapper = DurationMapper(maxMappings: 4)
+        let max = mapper.maxMappings
+        XCTAssertEqual(mapper.toInt(1.0), UInt32(0))
+        XCTAssertEqual(mapper.toInt(3.0), UInt32(1))
+        XCTAssertEqual(mapper.toInt(4.0), UInt32(2))
+        XCTAssertEqual(mapper.toInt(4.0), UInt32(2))
+        XCTAssertEqual(mapper.toInt(1.0), UInt32(0))
+        XCTAssertEqual(mapper.toInt(5.0), UInt32(3))
+        XCTAssertEqual(mapper.toInt(5.5), UInt32(3))
+        XCTAssertEqual(mapper.toInt(2.5), UInt32(1))
+        XCTAssertEqual(mapper.toFloat(2)!, Float32(4.0))
     }
     
     func testPerformanceExample() {

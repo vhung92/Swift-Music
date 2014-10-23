@@ -10,13 +10,16 @@ import UIKit
 
 class ViewController: UIViewController {
     let midiView = EndlessMIDIView()
+    let midiGenerator = MIDIGenerator(maxN: 5, midiReceptor: { println("No receptor configured for note event: \($0)") })
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        let midiURL = NSBundle.mainBundle().URLForResource("test", withExtension: "mid")!
+        let musicSequence = SwiftMusicSequence(midiData: NSData(contentsOfURL: midiURL)!)
+        midiGenerator.trainWith(musicSequence, consideringTracks: [2])
         midiView.start()
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(1) * NSEC_PER_SEC)), dispatch_get_main_queue()) {
-                self.midiView.startNote(60, withVelocity: 60, onChannel: 1)
-        }
+        midiGenerator.receptor = { self.midiView.playNote($0) }
+        midiGenerator.generating = true
         // Do any additional setup after loading the view, typically from a nib.
     }
 

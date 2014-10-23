@@ -37,6 +37,8 @@ class SwiftMusicSequenceTest: XCTestCase {
                 NSLog("\(event.description)")
             }
         }
+//        musicSequence.print()
+        
         
         XCTAssertNotEqual(musicTrack.trackLength, Float(0))
         XCTAssertNotEqual(nEvents, 0)

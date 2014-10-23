@@ -90,6 +90,12 @@ public class NGramModel {
         return result
     }
     
+    public func generateNextFromPrefix(prefix:[Token]) -> Token {
+        let plusOne = prefix.count + 1
+        let result = generate(plusOne, fromStart: prefix)[plusOne - 1]
+        return result
+    }
+    
     func tokenFromDistribution(tokenDistribution: [(Token,Frequency)]) -> Token {
         let frequencies:[Double] = map(tokenDistribution) { Double($0.1) }
         let randomIndex = randomIndexFromDistribution(frequencies)
@@ -100,31 +106,4 @@ public class NGramModel {
     func frequencyOf(gram:[Token]) -> Frequency {
         return nTrie.frequencyOf(gram);
     }
-}
-
-public struct Prefix: Hashable {
-    let tokens:[Token]
-    var length: Int {
-        return tokens.count
-    }
-    
-    init(tokens:[Token]) {
-        self.tokens = tokens
-    }
-    
-    public var hashValue: Int {
-        return reduce(tokens, 0) {$0 + Int($1.content)}
-    }
-}
-
-public func ==(lhs: Prefix, rhs: Prefix) -> Bool {
-    if lhs.length != rhs.length {
-        return false
-    }
-    for (lhitem, rhitem) in Zip2(lhs.tokens, rhs.tokens) {
-        if lhitem.content != rhitem.content {
-            return false;
-        }
-    }
-    return true
 }

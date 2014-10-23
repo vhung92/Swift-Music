@@ -10,4 +10,7 @@ var audioComponent = AudioComponent()
 audioComponent = AudioComponentFindNext(audioComponent, &description)
 AudioComponentGetDescription(audioComponent, &description)
 description
-AudioComponentCopyName(<#inComponent: AudioComponent#>, <#outName: UnsafeMutablePointer<Unmanaged<CFString>?>#>)
+
+var array = [3,2,1]
+sort(&array)
+array
