@@ -13,7 +13,8 @@ public class EndlessMIDIView {
     private let engine = AVAudioEngine()
     private let sampler:AVAudioUnitSampler
     private let stopQueue = dispatch_queue_create(nil, DISPATCH_QUEUE_CONCURRENT)
-    private let bps:Double = 1.0
+
+    public var secondsPerDurationUnit:Double = 1.0
     
     private var playingNotes:[[UInt16]] = []
 
@@ -65,7 +66,7 @@ public class EndlessMIDIView {
     public func playNote(midiEvent:MIDINote) {
         startNote(midiEvent.note, withVelocity: midiEvent.velocity, onChannel: midiEvent.channel)
         var durationInQuarternotes = Float(midiEvent.duration)
-        var durationInNanosec = Int64((Double(durationInQuarternotes) * Double(NSEC_PER_SEC)) / bps)
+        var durationInNanosec = Int64((Double(durationInQuarternotes) * Double(NSEC_PER_SEC)) * secondsPerDurationUnit)
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, durationInNanosec), stopQueue) {
             self.stopNote(midiEvent.note, onChannel:midiEvent.channel)
         }
