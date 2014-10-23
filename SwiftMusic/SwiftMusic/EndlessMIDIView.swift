@@ -13,10 +13,17 @@ public class EndlessMIDIView {
     private let engine = AVAudioEngine()
     private let sampler:AVAudioUnitSampler
     private let stopQueue = dispatch_queue_create(nil, DISPATCH_QUEUE_CONCURRENT)
-    private let bps:Double = 2.0
+    private let bps:Double = 1.0
+    
+    private var playingNotes:[[UInt16]] = []
 
     
     init() {
+        for i in 0..<10 {
+            var noteCounts = Array(Repeat(count: 128, repeatedValue: UInt16(0)))
+            playingNotes.append(noteCounts)
+        }
+        
         let playerNode = AVAudioPlayerNode()
         engine.attachNode(playerNode)
         let mixer = engine.mainMixerNode
@@ -39,11 +46,20 @@ public class EndlessMIDIView {
     
     public func startNote(note:UInt8, withVelocity: UInt8, onChannel: UInt8) {
         sampler.startNote(note, withVelocity: withVelocity, onChannel: onChannel)
-
+        let channel = Int(onChannel)
+        let iNote = Int(note)
+        ++playingNotes[channel][iNote]
     }
     
     public func stopNote(note:UInt8, onChannel:UInt8) {
-        sampler.stopNote(note, onChannel: onChannel)
+        let channel = Int(onChannel)
+        let iNote = Int(note)
+        if (playingNotes[channel][iNote]) > 0 {
+            let remainingNotes = --playingNotes[channel][iNote]
+            if remainingNotes == 0 {
+                sampler.stopNote(note, onChannel: onChannel)
+            }
+        }
     }
     
     public func playNote(midiEvent:MIDINote) {

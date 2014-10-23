@@ -60,6 +60,10 @@ class NGramModelTest: XCTestCase {
         XCTAssert(longGenerationString.rangeOfString(endOfCorpus) != nil, "Generation did not generate \"\(endOfCorpus)\" in 10000 characters. (Highly unlikely).")
         let impossibleCombo = "ww"
         XCTAssert(longGenerationString.rangeOfString(impossibleCombo) == nil, "\(impossibleCombo) should never be generated but was: \(longGenerationString)")
+        
+        let fa = Token.arrayFromString("fa")
+        let n = Token.fromChar("n")
+        XCTAssertEqual(model.generateNextFromPrefix(fa), n)
     }
 
     func testPerformanceExample() {

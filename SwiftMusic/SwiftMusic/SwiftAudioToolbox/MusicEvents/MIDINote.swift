@@ -9,7 +9,7 @@
 import Foundation
 import AudioToolbox
 
-public class MIDINote:MusicEvent, Printable {
+public class MIDINote:MusicEvent, Printable, Equatable, DebugPrintable {
     public let note:UInt8
     public let duration:Float32
     public let velocity:UInt8
@@ -18,6 +18,10 @@ public class MIDINote:MusicEvent, Printable {
     
     public override var description: String {
         return "MIDINote{timestamp: \(timestamp), note: \(note), duration:\(duration), velocity:\(velocity), releaseVelocity:\(releaseVelocity)}"
+    }
+    
+    public var debugDescription: String {
+        return description
     }
     
     init(timestamp:MusicTimeStamp, cMIDINoteMessage:MIDINoteMessage) {
@@ -46,4 +50,13 @@ public class MIDINote:MusicEvent, Printable {
             releaseVelocity: self.releaseVelocity,
             duration: self.duration)
     }
+}
+
+public func ==(lhs:MIDINote, rhs:MIDINote) -> Bool {
+    return (lhs.channel == rhs.channel &&
+    lhs.duration == rhs.duration &&
+    lhs.timestamp == rhs.timestamp &&
+    lhs.note == rhs.note &&
+    lhs.velocity == rhs.velocity &&
+    lhs.releaseVelocity == rhs.releaseVelocity)
 }

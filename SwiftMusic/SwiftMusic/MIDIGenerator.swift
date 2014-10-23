@@ -18,7 +18,7 @@ class MIDIGenerator {
         }
     }
     var receptor:(MIDINote) -> Void
-    var secondsPerDurationUnit = 0.05
+    var secondsPerDurationUnit = 1
     
     private let maxDurations = 128
     private let nGram:NGramModel
@@ -52,7 +52,7 @@ class MIDIGenerator {
             durationBits = durationBits << 8
         }
         let combinedBits = durationBits | UInt32(midiNote.note)
-        let content:Int = Int(midiNote.note)
+        let content:Int = Int(combinedBits)
         let token = Token(content: content)
         return token
     }

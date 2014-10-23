@@ -14,3 +14,10 @@ description
 var array = [3,2,1]
 sort(&array)
 array
+
+var durationBits:UInt32 = 127
+durationBits = durationBits << 8
+durationBits = 0x0000FF00 & UInt32(Int(durationBits))
+durationBits = durationBits >> 8
+
+61 | 256

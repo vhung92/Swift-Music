@@ -35,6 +35,20 @@ class SwiftMusicTests: XCTestCase {
         XCTAssertEqual(mapper.toFloat(2)!, Float32(4.0))
     }
     
+    func testMIDIGenerator() {
+        let generator = MIDIGenerator(maxN: 5, midiReceptor: { println($0) })
+        let testNotes = [
+            MIDINote(timestamp: 0, note: 60, duration: 4.0),
+            MIDINote(timestamp: 0, note: 61, duration: 2.0),
+            MIDINote(timestamp: 0, note: 62, duration: 3.0),
+            MIDINote(timestamp: 0, note: 63, duration: 5.0)
+        ]
+        for expected in testNotes {
+            var actual = generator.fromAbsoluteToken(generator.toAbsoluteToken(expected, includeDuration: true), timestamp: 0)
+            XCTAssertEqual(actual, expected, "Failed on notes: \(actual.description) != \(expected.description)")
+        }
+    }
+    
     func testPerformanceExample() {
         // This is an example of a performance test case.
         self.measureBlock() {
