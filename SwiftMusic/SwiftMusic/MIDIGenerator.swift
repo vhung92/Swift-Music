@@ -8,6 +8,19 @@
 
 import Foundation
 
+struct PitchAndDuration:Hashable {
+    let pitch:Int8
+    let duration:UInt8
+
+    var hashValue: Int {
+        return Int(pitch) | Int(UInt32(duration) << 8)
+    }
+}
+
+func ==(lhs: PitchAndDuration, rhs: PitchAndDuration) -> Bool {
+    return lhs.pitch == rhs.pitch && lhs.duration == rhs.duration
+}
+
 class MIDIGenerator {
     private var prefix:[MIDINote] = []
     var generating:Bool = false {
@@ -20,15 +33,17 @@ class MIDIGenerator {
     var receptor:(MIDINote, secondsPerDurationUnit:Double) -> Void = { println("No receptor configured for note event: \($0)") }
     var secondsPerDurationUnit = 0.7
     var startingPitch:UInt8 = 60
-    var defaultDuration:Float32 = 0.5
     var embedDuration = false
     var generateDurations = true
+    
+    var defaultDuration:Float32 = 0.5
+    var defaultVelocity:UInt8 = 70
     
     private let maxDurations = 128
     private let relativeZeroOffset = 127
     
-    private let melodyNGram:NGramModel
-    private let durationNGram:NGramModel
+    private let melodyNGram:NGramModel<PitchAndDuration>
+    private let durationNGram:NGramModel<UInt8>
     private let durationMap:DurationMapper
     private let relativePitch:Bool
     
@@ -41,7 +56,7 @@ class MIDIGenerator {
     
     func extendPrefixWith(notes:[MIDINote]) {
         self.prefix += notes
-        let maxLength = melodyNGram.n - 1
+        let maxLength = relativePitch ? melodyNGram.n : melodyNGram.n - 1
         let charactersTooMany = prefix.count - maxLength
         if charactersTooMany > 0 {
             prefix.removeRange(0..<charactersTooMany)
@@ -55,11 +70,11 @@ class MIDIGenerator {
             if i < trackCount {
                 let track = musicSequence.trackWithIndex(i)
                 let notes = track.notes
-                var tokens:SequenceOf<Token>
+                var tokens:SequenceOf<PitchAndDuration>
                 if self.relativePitch {
-                    tokens = SequenceOf<Token>(toRelativeTokens(notes, embedDuration: embedDuration))
+                    tokens = SequenceOf<PitchAndDuration>(toRelativeTokens(notes))
                 } else {
-                    tokens = SequenceOf<Token>(map(notes) { self.toAbsoluteToken($0, includeDuration: self.embedDuration) })
+                    tokens = SequenceOf<PitchAndDuration>(map(notes, toAbsoluteToken))
                 }
                 melodyNGram.train(tokens)
             } else {
@@ -68,72 +83,67 @@ class MIDIGenerator {
         }
     }
     
-    func toRelativeTokens(notes:SequenceOf<MIDINote>, embedDuration:Bool) -> SequenceOf<Token> {
-        return SequenceOf<Token> { () -> GeneratorOf<Token> in
+    func toRelativeTokens(notes:SequenceOf<MIDINote>) -> SequenceOf<PitchAndDuration> {
+        return SequenceOf<PitchAndDuration> { () -> GeneratorOf<PitchAndDuration> in
             var noteGenerator = notes.generate()
             var previousNote = noteGenerator.next()
-            return GeneratorOf<Token> { () -> Token? in
-                var relativeToken:Token? = nil
+            return GeneratorOf<PitchAndDuration> { () -> PitchAndDuration? in
+                var relativeToken:PitchAndDuration? = nil
                 
                 if let currentNote = noteGenerator.next() {
-                    let pitchChange = Int(Int(currentNote.note) - Int(previousNote!.note))
-                    let relativeNote = MIDINote(
-                        timestamp:          currentNote.timestamp,
-                        note:               UInt8(pitchChange + self.relativeZeroOffset),
-                        duration:           currentNote.duration,
-                        velocity:           currentNote.velocity,
-                        releaseVelocity:    currentNote.velocity,
-                        channel:            currentNote.channel
-                    )
+                    let pitchChange = Int8(Int(currentNote.note) - Int(previousNote!.note))
+                    let duration = self.embeddedDurationFrom(currentNote)
+                    relativeToken = PitchAndDuration(pitch: pitchChange, duration: duration)
                     
-                    relativeToken = self.toAbsoluteToken(relativeNote, includeDuration: embedDuration)
                     previousNote = currentNote
                 }
+                
                 return relativeToken
             }
         }
     }
     
-    func fromRelativeToken(token:Token, timestamp:Float) -> MIDINote {
-        var relativeNote = fromAbsoluteToken(token, timestamp: timestamp)
+    func fromRelativeToken(token:PitchAndDuration, timestamp:Float) -> MIDINote {
+        let pitch = Int(startingPitch) + Int(token.pitch)
+        startingPitch = UInt8(pitch)
+        assert(pitch <= 127 && pitch >= 0, "Relatively generated pitch out of bounds: \(pitch)")
         
-        var absolutePitch = Int(relativeNote.note) - relativeZeroOffset + Int(startingPitch)
-        assert(absolutePitch <= 127 && absolutePitch >= 0, "Relative pitch out of bounds: \(absolutePitch)")
-        startingPitch = UInt8(absolutePitch)
+        var duration = durationFromEmbedded(token.duration)
+        
         return MIDINote(
-            timestamp:          relativeNote.timestamp,
-            note:               startingPitch,
-            duration:           relativeNote.duration,
-            velocity:           relativeNote.velocity,
-            releaseVelocity:    relativeNote.releaseVelocity,
-            channel:            relativeNote.channel
+            timestamp:          timestamp,
+            note:               UInt8(pitch),
+            duration:           duration
         )
     }
     
-    func toAbsoluteToken(midiNote:MIDINote, includeDuration:Bool) -> Token {
-        var durationBits:UInt32 = 0
-        if includeDuration {
-            durationBits = durationMap.toInt(midiNote.duration)
-            durationBits = durationBits << 8
-        }
-        let combinedBits = durationBits | UInt32(midiNote.note)
-        let content:Int = Int(combinedBits)
-        let token = Token(content: content)
-        return token
+    func toAbsoluteToken(midiNote:MIDINote) -> PitchAndDuration {
+        var intDuration = embeddedDurationFrom(midiNote)
+        return PitchAndDuration(pitch: Int8(midiNote.note), duration: UInt8(intDuration))
     }
     
-    func fromAbsoluteToken(token:Token, timestamp:Float) -> MIDINote {
-        var durationBits = 0x0000FF00 & UInt32(token.content)
-        durationBits = durationBits >> 8
-        var duration = durationMap.toFloat(durationBits)
-        if duration == nil {duration = defaultDuration}
-        let note = UInt8(0x000000FF & UInt32(token.content))
-        return MIDINote(timestamp: timestamp, note: note, duration: duration!)
+    func embeddedDurationFrom(midiNote:MIDINote) -> UInt8 {
+        return self.embedDuration ? UInt8(self.durationMap.toInt(midiNote.duration)) : UInt8.max
+    }
+    func durationFromEmbedded(int:UInt8) -> Float32 {
+        return self.embedDuration ? durationMap.toFloat(UInt32(int))! : self.defaultDuration
+    }
+    
+    func fromAbsoluteToken(token:PitchAndDuration, timestamp:Float) -> MIDINote {
+        let duration:Float32 = durationFromEmbedded(token.duration)
+        let note = UInt8(token.pitch)
+        return MIDINote(timestamp: timestamp, note: note, duration: duration)
     }
     
     func startGeneratingTimedNotes() {
         if generating {
-            let tokenPrefix = prefix.map { self.toAbsoluteToken($0, includeDuration: true) }
+            var tokenPrefix:[PitchAndDuration]
+            if self.relativePitch {
+                tokenPrefix = Array(toRelativeTokens(SequenceOf<MIDINote>(prefix)))
+            } else {
+                tokenPrefix = prefix.map { self.toAbsoluteToken($0) }
+            }
+            
             let tokenResult = melodyNGram.generateNextFromPrefix(tokenPrefix)
             var note:MIDINote
             if self.relativePitch {

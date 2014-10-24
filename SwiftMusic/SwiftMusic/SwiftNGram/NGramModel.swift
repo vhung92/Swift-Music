@@ -8,17 +8,17 @@
 
 typealias Frequency = UInt64
 
-public class NGramModel {
+public class NGramModel<T:Hashable> {
     
     public let n: Int
-    private var nTrie = TrieBranch()
+    private var nTrie = TrieBranch<T>()
     
     public init(n: Int) {
         self.n = n
     }
     
-    public func train(tokens: SequenceOf<Token>) {
-        var nGram:[Token] = []
+    public func train(tokens: SequenceOf<T>) {
+        var nGram:[T] = []
         
         for token in tokens {
             nGram.append(token)
@@ -38,18 +38,18 @@ public class NGramModel {
         }
     }
     
-    public func train(tokens:[Token]) {
-        self.train(SequenceOf<Token>(tokens))
+    public func train(tokens:[T]) {
+        self.train(SequenceOf<T>(tokens))
     }
     
-    private func addNGram(nGram:[Token]) {
+    private func addNGram(nGram:[T]) {
         assert(nGram.count <= n, "nGram count was \(nGram.count) (should be \(n)")
         
         nTrie.add(nGram)
     }
     
-    public func generate(nTokens: Int, fromStart startSequence:[Token]) -> [Token] {
-        var result: [Token] = []
+    public func generate(nTokens: Int, fromStart startSequence:[T]) -> [T] {
+        var result: [T] = []
         result.reserveCapacity(nTokens + startSequence.count)
         
         var prefix = startSequence
@@ -74,20 +74,22 @@ public class NGramModel {
         return result
     }
     
-    public func generateNextFromPrefix(prefix:[Token]) -> Token {
+    public func generateNextFromPrefix(prefix:SequenceOf<T>) -> T { return generateNextFromPrefix(Array(prefix)) }
+    public func generateNextFromPrefix(prefix:[T]) -> T {
         let plusOne = prefix.count + 1
         let result = generate(plusOne, fromStart: prefix)[plusOne - 1]
         return result
     }
     
-    func tokenFromDistribution(tokenDistribution: [(Token,Frequency)]) -> Token {
+    func tokenFromDistribution(tokenDistribution: [(T,Frequency)]) -> T {
         let frequencies:[Double] = map(tokenDistribution) { Double($0.1) }
         let randomIndex = randomIndexFromDistribution(frequencies)
         let token = tokenDistribution[randomIndex].0
         return token
     }
     
-    func frequencyOf(gram:[Token]) -> Frequency {
+    func frequencyOf(gram:SequenceOf<T>) -> Frequency { return self.frequencyOf(Array(gram)); }
+    func frequencyOf(gram:[T]) -> Frequency {
         return nTrie.frequencyOf(gram);
     }
 }

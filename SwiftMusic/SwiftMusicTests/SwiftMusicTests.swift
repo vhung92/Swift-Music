@@ -38,6 +38,8 @@ class SwiftMusicTests: XCTestCase {
     func testMIDIGenerator() {
         let relativeGenerator = MIDIGenerator(maxN: 5)
         let absoluteGenerator = MIDIGenerator(maxN: 5, relativePitch: false)
+        relativeGenerator.embedDuration = true
+        absoluteGenerator.embedDuration = true
         let testNotes = [
             MIDINote(timestamp: 0, note: 60, duration: 4.0),
             MIDINote(timestamp: 0, note: 61, duration: 2.0),
@@ -46,12 +48,12 @@ class SwiftMusicTests: XCTestCase {
         ]
         
         for expected in testNotes {
-            var actual = absoluteGenerator.fromAbsoluteToken(absoluteGenerator.toAbsoluteToken(expected, includeDuration: true), timestamp: 0)
+            var actual = absoluteGenerator.fromAbsoluteToken(absoluteGenerator.toAbsoluteToken(expected), timestamp: 0)
             XCTAssertEqual(actual, expected, "Failed on notes: \(actual.description) != \(expected.description)")
         }
         
         relativeGenerator.startingPitch = 60
-        var relativeTokens = relativeGenerator.toRelativeTokens(SequenceOf<MIDINote>(testNotes), embedDuration: true)
+        var relativeTokens = relativeGenerator.toRelativeTokens(SequenceOf<MIDINote>(testNotes))
         for (token, expected) in Zip2(relativeTokens, suffix(testNotes, 3)) {
             var actual = relativeGenerator.fromRelativeToken(token, timestamp: 0)
             XCTAssertEqual(actual, expected, "Failed on notes: \(actual.description) != \(expected.description)")

@@ -8,18 +8,18 @@
 
 import Foundation
 
-class TrieBranch {
+    class TrieBranch<T:Hashable> {
     var frequency:Frequency = 0
     var remainingDepth = 0
-    private var children: [Token:TrieBranch] = [:]
+    private var children: [T:TrieBranch] = [:]
     
     init() {}
     
-    init(tokens:[Token]) {
+    init(tokens:[T]) {
         self.add(tokens)
     }
     
-    func add(tokens:[Token]) {
+    func add(tokens:[T]) {
         remainingDepth = max(remainingDepth, tokens.count)
         self.frequency++
         if tokens.count > 0 {
@@ -35,7 +35,7 @@ class TrieBranch {
         }
     }
     
-    func frequencyOf(nGram:[Token]) -> Frequency {
+    func frequencyOf(nGram:[T]) -> Frequency {
         if nGram.count == 0 {
             return frequency
         } else if let child = children[nGram[0]] {
@@ -46,11 +46,11 @@ class TrieBranch {
         }
     }
     
-    func successorDistribution() -> [(Token, Frequency)] {
+    func successorDistribution() -> [(T, Frequency)] {
         return map(children) { (token, branch) in return (token, branch.frequency) }
     }
     
-    func successorDistributionOf(prefix:[Token]) -> [(Token, Frequency)] {
+    func successorDistributionOf(prefix:[T]) -> [(T, Frequency)] {
         if prefix.count == 0 {
             return self.successorDistribution()
         } else if let nextNode = children[prefix[0]] {

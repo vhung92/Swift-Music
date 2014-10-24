@@ -10,14 +10,14 @@ import UIKit
 
 class ViewController: UIViewController {
     let midiView = EndlessMIDIView()
-    let midiGenerator = MIDIGenerator(maxN: 10)
+    let midiGenerator = MIDIGenerator(maxN: 3, relativePitch: true)
 
     override func viewDidLoad() {
         super.viewDidLoad()
         let midiURL = NSBundle.mainBundle().URLForResource("test", withExtension: "mid")!
         let musicSequence = SwiftMusicSequence(midiData: NSData(contentsOfURL: midiURL)!)
         midiGenerator.startingPitch = 80
-        midiGenerator.embedDuration = true
+        midiGenerator.embedDuration = false
         midiGenerator.generateDurations = true
         midiGenerator.trainWith(musicSequence, consideringTracks: [0])
         midiView.start()
