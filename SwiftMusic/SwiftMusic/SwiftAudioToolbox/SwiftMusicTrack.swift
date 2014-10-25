@@ -25,8 +25,7 @@ public class SwiftMusicTrack {
     
     public var notes:SequenceOf<MIDINote> {
         return SequenceOf<MIDINote>({ () -> GeneratorOf<MIDINote> in
-            let eventSequence = self.events
-            let eventGenerator = eventSequence.generate()
+            let eventGenerator = self.events.generate()
             return GeneratorOf<MIDINote>({
                 var note:MIDINote? = nil
                 while note == nil {
@@ -40,13 +39,6 @@ public class SwiftMusicTrack {
             })
         })
     }
-    
-//    public struct MIDINoteSequence: SequenceType {
-//        let eventSequence = self.events
-//        func generate() -> GeneratorOf<MIDINote> {
-//            var eventGenerator = eventSequence.
-//        }
-//    }
     
     public var trackLength:Float {
         var length = MusicTimeStamp()
@@ -111,4 +103,7 @@ public class MusicEventGenerator:GeneratorType {
         }
     }
     
+    deinit {
+        DisposeMusicEventIterator(cIterator)
+    }
 }

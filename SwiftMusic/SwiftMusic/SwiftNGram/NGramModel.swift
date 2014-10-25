@@ -17,6 +17,11 @@ public class NGramModel<T:Hashable> {
         self.n = n
     }
     
+    public func countUniqueGramsOfN(n:Int) -> Int {
+        assert(n <= self.n && n >= 0)
+        return nTrie.countNodesAtDepth(n)
+    }
+    
     public func train(tokens: SequenceOf<T>) {
         var nGram:[T] = []
         
@@ -53,7 +58,7 @@ public class NGramModel<T:Hashable> {
         result.reserveCapacity(nTokens + startSequence.count)
         
         var prefix = startSequence
-        for _ in 1...nTokens {
+        while result.count + prefix.count < nTokens {
             while prefix.count >= n {
                 result.append(prefix.removeAtIndex(0))
             }
@@ -69,7 +74,9 @@ public class NGramModel<T:Hashable> {
             let generatedToken = tokenFromDistribution(successorDistribution)
             prefix.append(generatedToken)
         }
-        println("Generated from prefix of length: \(prefix.count)")
+        if prefix.count != n-1 {
+            println("!!!!! Generated from shorter prefix: \(prefix.count)")
+        }
         result += prefix
         return result
     }

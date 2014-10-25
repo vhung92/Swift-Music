@@ -36,10 +36,8 @@ class SwiftMusicTests: XCTestCase {
     }
     
     func testMIDIGenerator() {
-        let relativeGenerator = MIDIGenerator(maxN: 5)
-        let absoluteGenerator = MIDIGenerator(maxN: 5, relativePitch: false)
-        relativeGenerator.embedDuration = true
-        absoluteGenerator.embedDuration = true
+        let relativeGenerator = MIDIGenerator(maxN: 5, relativePitch: true, embedDuration: true)
+        let absoluteGenerator = MIDIGenerator(maxN: 5, relativePitch: false, embedDuration: true)
         let testNotes = [
             MIDINote(timestamp: 0, note: 60, duration: 4.0),
             MIDINote(timestamp: 0, note: 61, duration: 2.0),

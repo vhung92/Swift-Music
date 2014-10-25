@@ -9,20 +9,30 @@
 import UIKit
 
 class ViewController: UIViewController {
+    @IBOutlet weak var nLabel: UILabel!
+    @IBOutlet weak var nSlider: UISlider!
+    @IBOutlet weak var trainingProgressBar: UIProgressView!
+    
+    var songCount = 5
+    var limitedN:Int = 3 {
+        didSet {
+            nLabel.text = "n = \(limitedN)"
+            midiGenerator.n = limitedN
+            nSlider.value = Float(limitedN)
+        }
+    }
+    
     let midiView = EndlessMIDIView()
-    let midiGenerator = MIDIGenerator(maxN: 3, relativePitch: true)
+    let midiGenerator = MIDIGenerator(maxN: 7, relativePitch: true, embedDuration:false)
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let midiURL = NSBundle.mainBundle().URLForResource("test", withExtension: "mid")!
-        let musicSequence = SwiftMusicSequence(midiData: NSData(contentsOfURL: midiURL)!)
-        midiGenerator.startingPitch = 80
-        midiGenerator.embedDuration = false
-        midiGenerator.generateDurations = true
-        midiGenerator.trainWith(musicSequence, consideringTracks: [0])
-        midiView.start()
-        midiGenerator.receptor = { self.midiView.secondsPerDurationUnit = $1; self.midiView.playNote($0) }
-        midiGenerator.generating = true
+        nSlider.maximumValue = Float(midiGenerator.n)
+        limitedN = Int(nSlider.maximumValue)
+        
+        midiGenerator.receptor = {
+            self.midiView.secondsPerDurationUnit = $1; self.midiView.playNote($0)
+        }
         // Do any additional setup after loading the view, typically from a nib.
     }
 
@@ -31,6 +41,46 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
+    @IBAction func nSliderChanged(sender: UISlider) {
+        let value = Int(ceil(sender.value))
+        limitedN = value
+    }
 
+    @IBAction func trainButton(sender: UIButton) {
+        dispatch_async(dispatch_queue_create(nil, DISPATCH_QUEUE_SERIAL)) { self.trainModel() }
+    }
+    @IBAction func playButton(sender: UIButton) {
+        midiGenerator.startingPitch = 60
+        midiView.start()
+        midiGenerator.generating = true
+    }
+    @IBAction func stopButton(sender: UIButton) {
+        midiGenerator.generating = false
+    }
+    
+    
+    func trainModel() {
+        let midis = NSBundle.mainBundle().URLsForResourcesWithExtension("mid", subdirectory: "/MIDI/Chaupin")
+        var trainedOn = 0
+        setProgressBarTo(1/(Float(self.songCount)+1.0))
+        if let midis = midis {
+            for maybeMidi in midis {
+                if let midiURL = maybeMidi as? NSURL {
+                    let musicSequence = SwiftMusicSequence(midiData: NSData(contentsOfURL: midiURL)!)
+                    midiGenerator.trainWith(musicSequence, consideringTracks: [0])
+                    if trainedOn > songCount { break }
+                    println("Trained on: \(++trainedOn)")
+                }
+                setProgressBarTo(Float(trainedOn+1)/(Float(self.songCount)+1.0))
+            }
+        }
+
+    }
+    
+    func setProgressBarTo(value:Float) {
+        dispatch_async(dispatch_get_main_queue()) {
+            self.trainingProgressBar.setProgress(value, animated: true)
+        }
+    }
 }
 

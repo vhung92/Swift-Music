@@ -25,6 +25,10 @@ class NGramModelTest: XCTestCase {
         let model = NGramModel<Character>(n: 7)
         model.train(SequenceOf<Character>(tokens))
         
+        XCTAssertEqual(model.countUniqueGramsOfN(1), 6)
+        XCTAssertEqual(model.countUniqueGramsOfN(2), 8)
+        XCTAssertEqual(model.countUniqueGramsOfN(7), 4)
+        
         let l = SequenceOf<Character>("l")
         XCTAssertEqual(model.frequencyOf(l), Frequency(2))
         XCTAssertEqual(model.frequencyOf(SequenceOf<Character>("y")), Frequency(0))

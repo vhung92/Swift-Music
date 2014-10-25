@@ -8,19 +8,6 @@
 
 import Foundation
 
-struct PitchAndDuration:Hashable {
-    let pitch:Int8
-    let duration:UInt8
-
-    var hashValue: Int {
-        return Int(pitch) | Int(UInt32(duration) << 8)
-    }
-}
-
-func ==(lhs: PitchAndDuration, rhs: PitchAndDuration) -> Bool {
-    return lhs.pitch == rhs.pitch && lhs.duration == rhs.duration
-}
-
 class MIDIGenerator {
     private var prefix:[MIDINote] = []
     var generating:Bool = false {
@@ -33,30 +20,35 @@ class MIDIGenerator {
     var receptor:(MIDINote, secondsPerDurationUnit:Double) -> Void = { println("No receptor configured for note event: \($0)") }
     var secondsPerDurationUnit = 0.7
     var startingPitch:UInt8 = 60
-    var embedDuration = false
-    var generateDurations = true
+    var n:Int
     
     var defaultDuration:Float32 = 0.5
     var defaultVelocity:UInt8 = 70
     
     private let maxDurations = 128
-    private let relativeZeroOffset = 127
+    
+    //Constant parameters
+    private let relativePitch:Bool
+    private let embedDuration:Bool
+    private let maxN:Int
     
     private let melodyNGram:NGramModel<PitchAndDuration>
     private let durationNGram:NGramModel<UInt8>
     private let durationMap:DurationMapper
-    private let relativePitch:Bool
     
-    init(maxN:Int, relativePitch:Bool = true) {
-        melodyNGram = NGramModel(n: maxN)
-        durationNGram = NGramModel(n: maxN)
-        durationMap = DurationMapper(maxMappings: UInt64(maxDurations))
+    init(maxN:Int, relativePitch:Bool, embedDuration:Bool) {
+        self.melodyNGram = NGramModel(n: maxN)
+        self.durationNGram = NGramModel(n: maxN)
+        self.durationMap = DurationMapper(maxMappings: UInt64(maxDurations))
+        self.maxN = maxN
+        self.n = maxN
+        self.embedDuration = embedDuration
         self.relativePitch = relativePitch
     }
     
     func extendPrefixWith(notes:[MIDINote]) {
         self.prefix += notes
-        let maxLength = relativePitch ? melodyNGram.n : melodyNGram.n - 1
+        let maxLength = relativePitch ? self.maxN : self.maxN - 1
         let charactersTooMany = prefix.count - maxLength
         if charactersTooMany > 0 {
             prefix.removeRange(0..<charactersTooMany)
@@ -77,10 +69,15 @@ class MIDIGenerator {
                     tokens = SequenceOf<PitchAndDuration>(map(notes, toAbsoluteToken))
                 }
                 melodyNGram.train(tokens)
+                if !embedDuration {
+                    var durations:SequenceOf<UInt8> = SequenceOf(map(notes) { return UInt8(self.durationMap.toInt($0.duration)) })
+                    durationNGram.train(durations)
+                }
             } else {
                 break
             }
         }
+        println("Now trained on \(melodyNGram.countUniqueGramsOfN(maxN)) unique \(maxN)-grams and ")
     }
     
     func toRelativeTokens(notes:SequenceOf<MIDINote>) -> SequenceOf<PitchAndDuration> {
@@ -92,7 +89,7 @@ class MIDIGenerator {
                 
                 if let currentNote = noteGenerator.next() {
                     let pitchChange = Int8(Int(currentNote.note) - Int(previousNote!.note))
-                    let duration = self.embeddedDurationFrom(currentNote)
+                    let duration = self.trainOnDuration(currentNote)
                     relativeToken = PitchAndDuration(pitch: pitchChange, duration: duration)
                     
                     previousNote = currentNote
@@ -108,7 +105,7 @@ class MIDIGenerator {
         startingPitch = UInt8(pitch)
         assert(pitch <= 127 && pitch >= 0, "Relatively generated pitch out of bounds: \(pitch)")
         
-        var duration = durationFromEmbedded(token.duration)
+        var duration = getDurationFrom(token.duration)
         
         return MIDINote(
             timestamp:          timestamp,
@@ -118,30 +115,38 @@ class MIDIGenerator {
     }
     
     func toAbsoluteToken(midiNote:MIDINote) -> PitchAndDuration {
-        var intDuration = embeddedDurationFrom(midiNote)
+        var intDuration = trainOnDuration(midiNote)
         return PitchAndDuration(pitch: Int8(midiNote.note), duration: UInt8(intDuration))
     }
     
-    func embeddedDurationFrom(midiNote:MIDINote) -> UInt8 {
+    func trainOnDuration(midiNote:MIDINote) -> UInt8 {
         return self.embedDuration ? UInt8(self.durationMap.toInt(midiNote.duration)) : UInt8.max
     }
-    func durationFromEmbedded(int:UInt8) -> Float32 {
-        return self.embedDuration ? durationMap.toFloat(UInt32(int))! : self.defaultDuration
+    func getDurationFrom(embeddedInt:UInt8) -> Float32 {
+        if !self.embedDuration {
+            var limitedPrefix = prefix.count > 0 ? Array(suffix(prefix, n)) : []
+            var durationPrefix:SequenceOf<UInt8> = SequenceOf(map(limitedPrefix) { return UInt8(self.durationMap.toInt($0.duration)) })
+            var durationInt = durationNGram.generateNextFromPrefix(durationPrefix)
+            return self.durationMap.toFloat(UInt32(durationInt))!
+        } else {
+            return self.durationMap.toFloat(UInt32(embeddedInt))!
+        }
     }
     
     func fromAbsoluteToken(token:PitchAndDuration, timestamp:Float) -> MIDINote {
-        let duration:Float32 = durationFromEmbedded(token.duration)
+        let duration:Float32 = getDurationFrom(token.duration)
         let note = UInt8(token.pitch)
         return MIDINote(timestamp: timestamp, note: note, duration: duration)
     }
     
     func startGeneratingTimedNotes() {
         if generating {
+            var limitedPrefix = prefix.count > 0 ? Array(suffix(prefix, n)) : []
             var tokenPrefix:[PitchAndDuration]
             if self.relativePitch {
-                tokenPrefix = Array(toRelativeTokens(SequenceOf<MIDINote>(prefix)))
+                tokenPrefix = Array(toRelativeTokens(SequenceOf<MIDINote>(limitedPrefix)))
             } else {
-                tokenPrefix = prefix.map { self.toAbsoluteToken($0) }
+                tokenPrefix = limitedPrefix.map { self.toAbsoluteToken($0) }
             }
             
             let tokenResult = melodyNGram.generateNextFromPrefix(tokenPrefix)
