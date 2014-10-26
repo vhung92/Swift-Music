@@ -35,14 +35,10 @@ public enum MIDIMetaEventType {
 }
 
 public class MIDIMetaEvent:MusicEvent {
-    private let _type:MIDIMetaEventType
-    public var type:MIDIMetaEventType {
-        return _type
-    }
+    let type:MIDIMetaEventType
     
     private init(timestamp:MusicTimeStamp, cMetaEventType:UInt8, dataLength:UInt32, data:(UInt8)) {
-        _type = MIDIMetaEventType(cMetaEventType: cMetaEventType, dataLength: dataLength, data: data)
+        type = MIDIMetaEventType(cMetaEventType: cMetaEventType, dataLength: dataLength, data: data)
         super.init(timestamp:Float(timestamp))
-        
     }
 }

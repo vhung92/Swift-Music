@@ -14,7 +14,7 @@ public class EndlessMIDIView {
     private let sampler:AVAudioUnitSampler
     private let stopQueue = dispatch_queue_create(nil, DISPATCH_QUEUE_CONCURRENT)
 
-    public var secondsPerDurationUnit:Double = 1.0
+    public var secondsPerDurationUnit:Double = 0.7
     
     private var playingNotes:[[UInt16]] = []
 

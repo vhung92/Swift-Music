@@ -41,8 +41,8 @@ public class MusicEvent: Printable {
             let noteMessage = UnsafePointer<MIDINoteMessage>(eventData).memory
             return MIDINote(timestamp: timestamp, cMIDINoteMessage: noteMessage)
         case kMusicEventType_MIDIChannelMessage:
-            //TODO: Unimplemented music events
-            return UnimplementedMusicEvent(timestamp:timestamp)
+            let channelMessage = UnsafePointer<MIDIChannelMessage>(eventData).memory
+            return MIDIChannelEvent(timestamp: timestamp, cMIDIChannelMessage: channelMessage)
         case kMusicEventType_MIDIRawData:
             //TODO: Unimplemented music events
             return UnimplementedMusicEvent(timestamp:timestamp)

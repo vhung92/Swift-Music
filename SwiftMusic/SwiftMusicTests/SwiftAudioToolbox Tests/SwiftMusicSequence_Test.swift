@@ -30,16 +30,32 @@ class SwiftMusicSequenceTest: XCTestCase {
         XCTAssertEqual(musicSequence.trackCount, 13)
         let musicTrack = musicSequence.trackWithIndex(3)
         var nEvents = 0
+        
+        var foundStringEnsembles = 0
+        
         for event in musicTrack.events {
-            if let event = event as? MIDINote {
+            
+            if let noteEvent = event as? MIDINote {
                 nEvents++
-                XCTAssertNotEqual(event.note, UInt8(0))
-                NSLog("\(event.description)")
+                XCTAssertNotEqual(noteEvent.note, UInt8(0))
+//                NSLog("\(noteEvent.description)")
+            
+            } else if let channelEvent = event as? MIDIChannelEvent {
+                switch channelEvent.type {
+                case let .ProgramChange(program):
+                    if program == 48 {
+                        ++foundStringEnsembles
+                    }
+                default:
+                    break
+                }
+                
             }
+            
         }
 //        musicSequence.print()
         
-        
+        XCTAssertEqual(foundStringEnsembles, 1)
         XCTAssertNotEqual(musicTrack.trackLength, Float(0))
         XCTAssertNotEqual(nEvents, 0)
     }

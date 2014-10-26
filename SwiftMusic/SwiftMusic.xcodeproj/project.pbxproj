@@ -32,6 +32,7 @@
 		96CCB3F519F7B8200036F565 /* DurationMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CCB3F319F7B8200036F565 /* DurationMapper.swift */; };
 		96CCB40719F7DE8D0036F565 /* SoundFonts in Resources */ = {isa = PBXBuildFile; fileRef = 96CCB40619F7DE8D0036F565 /* SoundFonts */; };
 		96CCB40819F7DE8D0036F565 /* SoundFonts in Resources */ = {isa = PBXBuildFile; fileRef = 96CCB40619F7DE8D0036F565 /* SoundFonts */; };
+		96EC55DA19FC5DD300A8E31B /* MIDIChannelEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96FD184519FC57C200593732 /* MIDIChannelEvent.swift */; };
 		96F6AF9719FA6DA10086FF7C /* MIDI in Resources */ = {isa = PBXBuildFile; fileRef = 96F6AF9619FA6DA10086FF7C /* MIDI */; };
 		96F6AF9819FA6DA10086FF7C /* MIDI in Resources */ = {isa = PBXBuildFile; fileRef = 96F6AF9619FA6DA10086FF7C /* MIDI */; };
 		96F6AF9A19FA72990086FF7C /* PitchAndDuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F6AF9919FA72990086FF7C /* PitchAndDuration.swift */; };
@@ -53,6 +54,7 @@
 		96F731DF19DDD423008BB2C8 /* MIDIMetaEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F731C419DDCE63008BB2C8 /* MIDIMetaEvent.swift */; };
 		96F731E119DDD4F6008BB2C8 /* test.mid in Resources */ = {isa = PBXBuildFile; fileRef = 96F731E019DDD4F6008BB2C8 /* test.mid */; };
 		96F731E219DDD4F6008BB2C8 /* test.mid in Resources */ = {isa = PBXBuildFile; fileRef = 96F731E019DDD4F6008BB2C8 /* test.mid */; };
+		96FD184619FC57C200593732 /* MIDIChannelEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96FD184519FC57C200593732 /* MIDIChannelEvent.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -99,6 +101,7 @@
 		96F731D319DDCE89008BB2C8 /* SwiftAudioToolbox_Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftAudioToolbox_Tests.swift; sourceTree = "<group>"; };
 		96F731D619DDCEAA008BB2C8 /* SwiftMusicSequence_Test.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftMusicSequence_Test.swift; sourceTree = "<group>"; };
 		96F731E019DDD4F6008BB2C8 /* test.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = test.mid; sourceTree = "<group>"; };
+		96FD184519FC57C200593732 /* MIDIChannelEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIChannelEvent.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -224,6 +227,7 @@
 			isa = PBXGroup;
 			children = (
 				96F731C419DDCE63008BB2C8 /* MIDIMetaEvent.swift */,
+				96FD184519FC57C200593732 /* MIDIChannelEvent.swift */,
 				9600F54219DDDCC200E5F165 /* UnimplementedMusicEvent.swift */,
 				96F731C519DDCE63008BB2C8 /* MIDINote.swift */,
 			);
@@ -350,6 +354,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9605E7DC19DDCC55007A91ED /* ViewController.swift in Sources */,
+				96FD184619FC57C200593732 /* MIDIChannelEvent.swift in Sources */,
 				96F731D019DDCE63008BB2C8 /* SwiftMusicTrack.swift in Sources */,
 				963E2D5219F68E4A005DAC8E /* EndlessMIDIView.swift in Sources */,
 				96F731CE19DDCE63008BB2C8 /* SwiftAudioToolboxResultCodes.swift in Sources */,
@@ -380,6 +385,7 @@
 				96F6AF9B19FA72990086FF7C /* PitchAndDuration.swift in Sources */,
 				96607EDF19EFCCFD002E1456 /* Trie.swift in Sources */,
 				96F731DE19DDD421008BB2C8 /* MIDINote.swift in Sources */,
+				96EC55DA19FC5DD300A8E31B /* MIDIChannelEvent.swift in Sources */,
 				96607ED619EEA28E002E1456 /* NGramModel.swift in Sources */,
 				96F731DC19DDCF6D008BB2C8 /* SwiftAudioToolboxResultCodes.swift in Sources */,
 				96CCB3F519F7B8200036F565 /* DurationMapper.swift in Sources */,

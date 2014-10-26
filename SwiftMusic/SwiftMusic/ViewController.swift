@@ -13,7 +13,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var nSlider: UISlider!
     @IBOutlet weak var trainingProgressBar: UIProgressView!
     
-    var songCount = 5
+    var songCount = 10
     var limitedN:Int = 3 {
         didSet {
             nLabel.text = "n = \(limitedN)"
@@ -51,8 +51,11 @@ class ViewController: UIViewController {
     }
     @IBAction func playButton(sender: UIButton) {
         midiGenerator.startingPitch = 60
+        midiGenerator.secondsPerDurationUnit = 0.8
+        midiView.secondsPerDurationUnit = 0.8
         midiView.start()
         midiGenerator.generating = true
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(30 * NSEC_PER_SEC)), dispatch_get_main_queue()) { self.midiGenerator.generating = false }
     }
     @IBAction func stopButton(sender: UIButton) {
         midiGenerator.generating = false
@@ -60,10 +63,11 @@ class ViewController: UIViewController {
     
     
     func trainModel() {
-        let midis = NSBundle.mainBundle().URLsForResourcesWithExtension("mid", subdirectory: "/MIDI/Chaupin")
+        let midis = NSBundle.mainBundle().URLsForResourcesWithExtension("mid", subdirectory: "/MIDI/Evaluation Data")
         var trainedOn = 0
-        setProgressBarTo(1/(Float(self.songCount)+1.0))
         if let midis = midis {
+            var songCount = min(self.songCount, midis.count)
+            setProgressBarTo(1/(Float(songCount)+1.0))
             for maybeMidi in midis {
                 if let midiURL = maybeMidi as? NSURL {
                     let musicSequence = SwiftMusicSequence(midiData: NSData(contentsOfURL: midiURL)!)
@@ -71,7 +75,7 @@ class ViewController: UIViewController {
                     if trainedOn > songCount { break }
                     println("Trained on: \(++trainedOn)")
                 }
-                setProgressBarTo(Float(trainedOn+1)/(Float(self.songCount)+1.0))
+                setProgressBarTo(Float(trainedOn+1)/(Float(songCount)+1.0))
             }
         }
 

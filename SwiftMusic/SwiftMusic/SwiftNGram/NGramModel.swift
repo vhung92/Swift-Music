@@ -6,12 +6,13 @@
 //  Copyright (c) 2014 Swift Generation. All rights reserved.
 //
 
-typealias Frequency = UInt64
+public typealias Frequency = UInt64
 
 public class NGramModel<T:Hashable> {
     
     public let n: Int
     private var nTrie = TrieBranch<T>()
+    public var filter: ([(T, Frequency)] -> [(T, Frequency)]) = { return $0 }
     
     public init(n: Int) {
         self.n = n
@@ -62,14 +63,14 @@ public class NGramModel<T:Hashable> {
             while prefix.count >= n {
                 result.append(prefix.removeAtIndex(0))
             }
-            var successorDistribution = nTrie.successorDistributionOf(prefix)
+            var successorDistribution = filter(nTrie.successorDistributionOf(prefix))
             while successorDistribution.count == 0 {
                 if prefix.count == 0 {
                     fatalError("Tried to generate from empty NGramModel")
                 }
                 // Lower the insight until low enough that the prefix can be found
                 result.append(prefix.removeAtIndex(0))
-                successorDistribution = nTrie.successorDistributionOf(prefix)
+                successorDistribution = filter(nTrie.successorDistributionOf(prefix))
             }
             let generatedToken = tokenFromDistribution(successorDistribution)
             prefix.append(generatedToken)
