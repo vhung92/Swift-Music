@@ -51,6 +51,7 @@ class ViewController: UIViewController {
     }
     @IBAction func playButton(sender: UIButton) {
         midiGenerator.startingPitch = 60
+        midiGenerator.clearPrefix()
         midiGenerator.secondsPerDurationUnit = 0.8
         midiView.secondsPerDurationUnit = 0.8
         midiView.start()

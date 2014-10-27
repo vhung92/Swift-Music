@@ -22,6 +22,7 @@ class MIDIGenerator {
     var midiNoteRange:Range<Int> = 0...127
     var allowedNoteRange = 36...125
     var startingPitch:UInt8 = 60
+    var targetPitch:UInt8?
     var n:Int
     
     var defaultDuration:Float32 = 0.5
@@ -60,8 +61,12 @@ class MIDIGenerator {
             prefix.removeRange(0..<charactersTooMany)
         }
     }
+    func clearPrefix() {
+        self.prefix = []
+    }
     
     private func wrapAround(successorDistribution:[(PitchAndDuration, Frequency)]) -> [(PitchAndDuration, Frequency)] {
+        println("Successors: \(successorDistribution.count)")
         return successorDistribution.map { (var pitchWrapper:PitchAndDuration, frequency:Frequency) -> (PitchAndDuration, Frequency) in
             var pitchChange = pitchWrapper.pitch
             let absoluteNote = { Int(self.startingPitch) + Int(pitchChange) }
@@ -77,6 +82,9 @@ class MIDIGenerator {
             return (pitchWrapper, frequency)
         }
     }
+//    private func skewTowardsPitch(successorDistribution:[(PitchAndDuration, Frequency)]) -> [(PitchAndDuration, Frequency)] {
+//        
+//    }
     private func inAllowedRange(note:Int) -> Bool {
         return self.allowedNoteRange.startIndex <= note && note <= self.allowedNoteRange.endIndex
     }
@@ -154,7 +162,7 @@ class MIDIGenerator {
     }
     func getDurationFrom(embeddedInt:UInt8) -> Float32 {
         if !self.embedDuration {
-            var limitedPrefix = prefix.count > 0 ? Array(suffix(prefix, n-2)) : []
+            var limitedPrefix = prefix.count > 0 ? Array(suffix(prefix, n-1)) : []
             var durationPrefix:SequenceOf<UInt8> = SequenceOf(map(limitedPrefix) {
                 return UInt8(self.durationMap.toInt($0.duration))
             })
@@ -173,7 +181,7 @@ class MIDIGenerator {
     
     func startGeneratingTimedNotes() {
         if generating {
-            var limitedPrefix = prefix.count > 0 ? Array(suffix(prefix, n-1)) : []
+            var limitedPrefix = prefix.count > 0 ? Array(suffix(prefix, n)) : []
             var tokenPrefix:[PitchAndDuration]
             if self.relativePitch {
                 tokenPrefix = Array(toRelativeTokens(SequenceOf<MIDINote>(limitedPrefix)))

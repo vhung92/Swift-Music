@@ -73,10 +73,8 @@ public class NGramModel<T:Hashable> {
                 successorDistribution = filter(nTrie.successorDistributionOf(prefix))
             }
             let generatedToken = tokenFromDistribution(successorDistribution)
+            println("Generated from prefix: \(prefix.count)")
             prefix.append(generatedToken)
-        }
-        if prefix.count != n-1 {
-            println("!!!!! Generated from shorter prefix: \(prefix.count)")
         }
         result += prefix
         return result
