@@ -50,7 +50,7 @@ class MIDIGenerator {
         self.durationMap = DurationMapper(maxMappings: UInt64(maxDurations))
         if relativePitch {
             self.melodyNGram.filter = {
-                self.wrapAround(self.pullBack(self.weakCut(self.analyse($0, $1))))
+                self.wrapAround(self.weakCut(self.analyse($0, $1)))
             }
         } else {
             self.melodyNGram.filter = analyse
@@ -116,12 +116,13 @@ class MIDIGenerator {
         return (successorDistribution, prefixLength)
     }
     private func weakCut(var successorDistribution:[(PitchAndDuration, Frequency)],_ prefixLength:Int) -> ([(PitchAndDuration, Frequency)], Int) {
+        let hugeScaler = UInt64(1000)
         let absoluteNote = {(relNote:Int8) -> Int in
             return Int(self.startingPitch) + Int(relNote)
         }
         successorDistribution = successorDistribution.map {
             if self.inAllowedRange(absoluteNote($0.0.pitch)) {
-                return ($0.0, $0.1*1000)
+                return ($0.0, $0.1*hugeScaler)
             } else {
                 return $0
             }
@@ -139,7 +140,7 @@ class MIDIGenerator {
 //        }
         
         successorDistribution = successorDistribution.map { (pitchWrapper:PitchAndDuration, frequency:Frequency) -> (PitchAndDuration, Frequency) in
-            return (pitchWrapper, frequency * UInt64(self.goodnessOfNote(UInt8(absoluteNote(pitchWrapper.pitch)))))
+            return (pitchWrapper, UInt64(Double(frequency) * self.goodnessOfNote(UInt8(absoluteNote(pitchWrapper.pitch)))))
         }
         
         return (successorDistribution, prefixLength)
@@ -148,7 +149,7 @@ class MIDIGenerator {
         if let targetPitch = targetPitch {
             let lowestGoodness = 1.0
             let strength = 100.0
-            let flexibility = 30.0
+            let flexibility = 24.0
             let mean = Double(targetPitch)
             let stdDeviation = max(Double(abs(targetPitch - startingPitch)/2), flexibility)
             
