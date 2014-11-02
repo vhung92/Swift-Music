@@ -12,7 +12,7 @@ public class NGramModel<T:Hashable> {
     
     public let n: Int
     private var nTrie = TrieBranch<T>()
-    public var filter: ([(T, Frequency)] -> [(T, Frequency)]) = { return $0 }
+    public var filter: (([(T, Frequency)],prefixLength:Int) -> ([(T, Frequency)],Int)) = { return ($0,$1) }
     
     public init(n: Int) {
         self.n = n
@@ -63,17 +63,16 @@ public class NGramModel<T:Hashable> {
             while prefix.count >= n {
                 result.append(prefix.removeAtIndex(0))
             }
-            var successorDistribution = filter(nTrie.successorDistributionOf(prefix))
+            var (successorDistribution, _) = filter(nTrie.successorDistributionOf(prefix), prefixLength: prefix.count)
             while successorDistribution.count == 0 {
                 if prefix.count == 0 {
                     fatalError("Tried to generate from empty NGramModel")
                 }
                 // Lower the insight until low enough that the prefix can be found
                 result.append(prefix.removeAtIndex(0))
-                successorDistribution = filter(nTrie.successorDistributionOf(prefix))
+                (successorDistribution, _) = filter(nTrie.successorDistributionOf(prefix), prefixLength: prefix.count)
             }
             let generatedToken = tokenFromDistribution(successorDistribution)
-            println("Generated from prefix: \(prefix.count)")
             prefix.append(generatedToken)
         }
         result += prefix

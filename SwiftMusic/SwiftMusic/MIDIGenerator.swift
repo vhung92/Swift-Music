@@ -19,10 +19,10 @@ class MIDIGenerator {
     }
     var receptor:(MIDINote, secondsPerDurationUnit:Double) -> Void = { println("No receptor configured for note event: \($0)") }
     var secondsPerDurationUnit = 0.7
-    var midiNoteRange:Range<Int> = 0...127
-    var allowedNoteRange = 36...125
+    var midiNoteRange:Range<Int> = 0...126
+    var allowedNoteRange = 36...85
     var startingPitch:UInt8 = 60
-    var targetPitch:UInt8?
+    var targetPitch:UInt8? = 60
     var n:Int
     
     var defaultDuration:Float32 = 0.5
@@ -49,7 +49,11 @@ class MIDIGenerator {
         
         self.durationMap = DurationMapper(maxMappings: UInt64(maxDurations))
         if relativePitch {
-            self.melodyNGram.filter = wrapAround
+            self.melodyNGram.filter = {
+                self.wrapAround(self.pullBack(self.weakCut(self.analyse($0, $1))))
+            }
+        } else {
+            self.melodyNGram.filter = analyse
         }
     }
     
@@ -65,28 +69,101 @@ class MIDIGenerator {
         self.prefix = []
     }
     
-    private func wrapAround(successorDistribution:[(PitchAndDuration, Frequency)]) -> [(PitchAndDuration, Frequency)] {
-        println("Successors: \(successorDistribution.count)")
-        return successorDistribution.map { (var pitchWrapper:PitchAndDuration, frequency:Frequency) -> (PitchAndDuration, Frequency) in
+    private func analyse(successorDistribution:[(PitchAndDuration, Frequency)],_ prefixLength:Int) -> ([(PitchAndDuration, Frequency)], Int) {
+        if successorDistribution.count > 0 {
+            println("\(successorDistribution.count)\t\(prefixLength)")
+        }
+        return (successorDistribution, prefixLength)
+    }
+    private func print(successorDistribution:[(PitchAndDuration, Frequency)],_ prefixLength:Int) -> ([(PitchAndDuration, Frequency)], Int) {
+//        println("Successors: \(successorDistribution.count)")
+        println("\(successorDistribution)")
+        return (successorDistribution, prefixLength)
+    }
+    private func wrapAround(successorDistribution:[(PitchAndDuration, Frequency)],_ prefixLength:Int) -> ([(PitchAndDuration, Frequency)], Int) {
+        let transformedDistribution = successorDistribution.map { (var pitchWrapper:PitchAndDuration, frequency:Frequency) -> (PitchAndDuration, Frequency) in
             var pitchChange = pitchWrapper.pitch
             let absoluteNote = { Int(self.startingPitch) + Int(pitchChange) }
-            if !self.inAllowedRange(absoluteNote()) {
-                while absoluteNote() < self.allowedNoteRange.startIndex {
+            if !self.inMidiRange(absoluteNote()) {
+                println("-1\t-1")
+                while absoluteNote() < self.midiNoteRange.startIndex {
                     pitchChange += 12
                 }
-                while absoluteNote() >= self.allowedNoteRange.endIndex {
+                while absoluteNote() >= self.midiNoteRange.endIndex {
                     pitchChange -= 12
                 }
                 pitchWrapper = PitchAndDuration(pitch: pitchChange, duration: pitchWrapper.duration)
             }
             return (pitchWrapper, frequency)
         }
+        return (transformedDistribution, prefixLength)
     }
-//    private func skewTowardsPitch(successorDistribution:[(PitchAndDuration, Frequency)]) -> [(PitchAndDuration, Frequency)] {
-//        
-//    }
+    private func pullBack(var successorDistribution:[(PitchAndDuration, Frequency)],_ prefixLength:Int) -> ([(PitchAndDuration, Frequency)], Int) {
+        let absoluteNote = {(relNote:Int8) -> Int in
+            return Int(self.startingPitch) + Int(relNote)
+        }
+        successorDistribution = successorDistribution.map {
+            let relativeNote = $0.0.pitch
+            if (absoluteNote(0) < self.midiNoteRange.startIndex
+            && relativeNote > 0)
+            || (absoluteNote(0) >= self.midiNoteRange.endIndex
+            && relativeNote < 0) {
+                return ($0.0, $0.1*1000)
+            } else {
+                return $0
+            }
+        }
+        return (successorDistribution, prefixLength)
+    }
+    private func weakCut(var successorDistribution:[(PitchAndDuration, Frequency)],_ prefixLength:Int) -> ([(PitchAndDuration, Frequency)], Int) {
+        let absoluteNote = {(relNote:Int8) -> Int in
+            return Int(self.startingPitch) + Int(relNote)
+        }
+        successorDistribution = successorDistribution.map {
+            if self.inAllowedRange(absoluteNote($0.0.pitch)) {
+                return ($0.0, $0.1*1000)
+            } else {
+                return $0
+            }
+        }
+        return (successorDistribution, prefixLength)
+    }
+    private func skewTowardsTargetPitch(var successorDistribution:[(PitchAndDuration, Frequency)],_ prefixLength:Int) -> ([(PitchAndDuration, Frequency)], Int) {
+        let absoluteNote = {(relNote:Int8) -> Int in
+            return Int(self.startingPitch) + Int(relNote)
+        }
+        
+        // Cut off
+//        successorDistribution = successorDistribution.filter() {
+//            return self.inAllowedRange(absoluteNote($0.0.pitch))
+//        }
+        
+        successorDistribution = successorDistribution.map { (pitchWrapper:PitchAndDuration, frequency:Frequency) -> (PitchAndDuration, Frequency) in
+            return (pitchWrapper, frequency * UInt64(self.goodnessOfNote(UInt8(absoluteNote(pitchWrapper.pitch)))))
+        }
+        
+        return (successorDistribution, prefixLength)
+    }
+    private func goodnessOfNote(note:UInt8) -> Double {
+        if let targetPitch = targetPitch {
+            let lowestGoodness = 1.0
+            let strength = 100.0
+            let flexibility = 30.0
+            let mean = Double(targetPitch)
+            let stdDeviation = max(Double(abs(targetPitch - startingPitch)/2), flexibility)
+            
+            // Gaussian around target pitch
+            let gaussianEvaluated = strength * exp(-(Double(note)-mean)*(Double(note)-mean)/(2*stdDeviation*stdDeviation)) + lowestGoodness
+            return gaussianEvaluated
+        } else {
+            return 1
+        }
+    }
     private func inAllowedRange(note:Int) -> Bool {
         return self.allowedNoteRange.startIndex <= note && note <= self.allowedNoteRange.endIndex
+    }
+    private func inMidiRange(note:Int) -> Bool {
+        return self.midiNoteRange.startIndex <= note && note <= self.midiNoteRange.endIndex
     }
     
     func trainWith(musicSequence:SwiftMusicSequence, var consideringTracks tracks:[Int]) {
@@ -206,7 +283,6 @@ class MIDIGenerator {
             }
             
             self.receptor(note, secondsPerDurationUnit:secondsPerDurationUnit)
-            println(note)
         }
     }
 }

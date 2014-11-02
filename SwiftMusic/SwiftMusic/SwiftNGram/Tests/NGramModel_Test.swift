@@ -54,7 +54,9 @@ class NGramModelTest: XCTestCase {
         model.train(tokens)
         
         let longGeneration = model.generate(10000, fromStart: [])
+        let longGeneration2 = model.generate(10000, fromStart: [])
         XCTAssertEqual(longGeneration.count, 10000)
+        XCTAssertNotEqual(longGeneration, longGeneration2)
         let longGenerationString = String(longGeneration)
         let endOfCorpus = suffix(corpus, 5)
         XCTAssert(longGenerationString.rangeOfString(endOfCorpus) != nil, "Generation did not generate \"\(endOfCorpus)\" in 10000 characters. (Highly unlikely).")

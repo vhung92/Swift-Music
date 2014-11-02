@@ -25,7 +25,7 @@
                                     <action selector="playButton:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="RhJ-3e-7c9"/>
                                 </connections>
                             </button>
-                            <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="3" minValue="2" maxValue="7" translatesAutoresizingMaskIntoConstraints="NO" id="C5S-uW-fel">
+                            <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="3" minValue="1" maxValue="7" translatesAutoresizingMaskIntoConstraints="NO" id="C5S-uW-fel">
                                 <rect key="frame" x="14" y="163" width="292" height="31"/>
                                 <connections>
                                     <action selector="nSliderChanged:" destination="vXZ-lx-hvc" eventType="valueChanged" id="t6n-Ia-yb1"/>
@@ -58,6 +58,24 @@
                                     <action selector="trainButton:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="LOk-Hp-l45"/>
                                 </connections>
                             </button>
+                            <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="60" minValue="0.0" maxValue="127" translatesAutoresizingMaskIntoConstraints="NO" id="x4v-kO-FlG">
+                                <rect key="frame" x="14" y="345" width="292" height="31"/>
+                                <connections>
+                                    <action selector="targetPitchSliderChanged:" destination="vXZ-lx-hvc" eventType="valueChanged" id="7mA-fJ-kan"/>
+                                </connections>
+                            </slider>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vay-6P-SI8">
+                                <rect key="frame" x="16" y="306" width="51" height="31"/>
+                                <connections>
+                                    <action selector="targetPitchSwitchFlipped:" destination="vXZ-lx-hvc" eventType="valueChanged" id="6qD-0E-W1e"/>
+                                </connections>
+                            </switch>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Target pitch: " lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z3n-rz-5Kg">
+                                <rect key="frame" x="82" y="311" width="222" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -65,6 +83,9 @@
                     <connections>
                         <outlet property="nLabel" destination="m2S-Fa-3Ex" id="hqE-ZR-kEG"/>
                         <outlet property="nSlider" destination="C5S-uW-fel" id="Upf-yZ-1ih"/>
+                        <outlet property="targetPitchLabel" destination="Z3n-rz-5Kg" id="MvU-pf-FJR"/>
+                        <outlet property="targetPitchSlider" destination="x4v-kO-FlG" id="8Cn-UO-J7g"/>
+                        <outlet property="targetPitchSwitch" destination="vay-6P-SI8" id="KRV-H7-NqG"/>
                         <outlet property="trainingProgressBar" destination="xAj-tU-rP7" id="XIw-PJ-im8"/>
                     </connections>
                 </viewController>

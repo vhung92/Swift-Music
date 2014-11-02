@@ -10,6 +10,9 @@ import UIKit
 
 class ViewController: UIViewController {
     @IBOutlet weak var nLabel: UILabel!
+    @IBOutlet weak var targetPitchLabel: UILabel!
+    @IBOutlet weak var targetPitchSwitch: UISwitch!
+    @IBOutlet weak var targetPitchSlider: UISlider!
     @IBOutlet weak var nSlider: UISlider!
     @IBOutlet weak var trainingProgressBar: UIProgressView!
     
@@ -21,9 +24,10 @@ class ViewController: UIViewController {
             nSlider.value = Float(limitedN)
         }
     }
+    var generatedNotes = 0
     
     let midiView = EndlessMIDIView()
-    let midiGenerator = MIDIGenerator(maxN: 7, relativePitch: true, embedDuration:false)
+    let midiGenerator = MIDIGenerator(maxN: 5, relativePitch: false, embedDuration:false)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,7 +35,12 @@ class ViewController: UIViewController {
         limitedN = Int(nSlider.maximumValue)
         
         midiGenerator.receptor = {
-            self.midiView.secondsPerDurationUnit = $1; self.midiView.playNote($0)
+            if ++self.generatedNotes >= 100000 {
+                self.midiGenerator.generating = false
+                self.generatedNotes = 0
+            }
+            self.midiView.secondsPerDurationUnit = $1
+            self.midiView.playNote($0)
         }
         // Do any additional setup after loading the view, typically from a nib.
     }
@@ -52,16 +61,30 @@ class ViewController: UIViewController {
     @IBAction func playButton(sender: UIButton) {
         midiGenerator.startingPitch = 60
         midiGenerator.clearPrefix()
-        midiGenerator.secondsPerDurationUnit = 0.8
-        midiView.secondsPerDurationUnit = 0.8
+        midiGenerator.secondsPerDurationUnit = 0.7
         midiView.start()
         midiGenerator.generating = true
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(30 * NSEC_PER_SEC)), dispatch_get_main_queue()) { self.midiGenerator.generating = false }
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(30 * NSEC_PER_SEC)), dispatch_get_main_queue()) { self.midiGenerator.generating = false }
     }
     @IBAction func stopButton(sender: UIButton) {
         midiGenerator.generating = false
     }
+    @IBAction func targetPitchSwitchFlipped(sender: UISwitch) {
+        if sender.on {
+            updateTargetPitch()
+        } else {
+            midiGenerator.targetPitch = nil
+        }
+    }
+    @IBAction func targetPitchSliderChanged(sender: UISlider) {
+        updateTargetPitch()
+    }
     
+    private func updateTargetPitch() {
+        let targetPitch = UInt8(self.targetPitchSlider.value)
+        targetPitchLabel.text = "Target pitch: \(targetPitch)"
+        midiGenerator.targetPitch = targetPitch
+    }
     
     func trainModel() {
         let midis = NSBundle.mainBundle().URLsForResourcesWithExtension("mid", subdirectory: "/MIDI/Evaluation Data")

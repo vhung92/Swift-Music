@@ -8,12 +8,16 @@
 
 import Foundation
 
-struct PitchAndDuration:Hashable {
+struct PitchAndDuration:Hashable, Printable {
     let pitch:Int8
     let duration:UInt8
     
     var hashValue: Int {
         return Int(pitch) | Int(UInt32(duration) << 8)
+    }
+    
+    var description:String {
+        return pitch.description
     }
 }
 
