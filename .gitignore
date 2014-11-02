@@ -18,3 +18,4 @@ DerivedData
 build/*
 *.xcuserdatad
 SwiftMusic/SwiftMusic/MyPlayground.playground/section-1.swift
+SwiftMusic/SwiftMusic/SoundFonts/acoustic_grand_piano_ydp_20080910.sf2

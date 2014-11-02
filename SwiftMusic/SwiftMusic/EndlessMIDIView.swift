@@ -34,10 +34,10 @@ public class EndlessMIDIView {
         engine.connect(sampler, to: engine.outputNode, format: nil)
         
         
-        let soundbank = NSBundle.mainBundle().URLForResource("SoundFonts/acoustic_grand_piano_ydp_20080910", withExtension: "sf2")
+        let soundbank = NSBundle.mainBundle().URLForResource("SoundFonts/YAMAHA DX7Piano", withExtension: "sf2")
         let melodicBank = UInt8(kAUSampler_DefaultMelodicBankMSB)
         var error:NSError?
-        if !sampler.loadSoundBankInstrumentAtURL(soundbank, program: 1, bankMSB: melodicBank, bankLSB: 0, error: &error) {
+        if !sampler.loadSoundBankInstrumentAtURL(soundbank, program: 0, bankMSB: melodicBank, bankLSB: 0, error: &error) {
             println("could not load soundbank")
         }
         if let e = error {
