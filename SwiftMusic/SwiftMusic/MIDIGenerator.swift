@@ -50,7 +50,7 @@ class MIDIGenerator {
         self.durationMap = DurationMapper(maxMappings: UInt64(maxDurations))
         if relativePitch {
             self.melodyNGram.filter = {
-                self.wrapAround(self.weakCut(self.analyse($0, $1)))
+                self.wrapAround(self.skewTowardsTargetPitch(self.analyse($0, $1)))
             }
         } else {
             self.melodyNGram.filter = analyse
@@ -140,7 +140,7 @@ class MIDIGenerator {
 //        }
         
         successorDistribution = successorDistribution.map { (pitchWrapper:PitchAndDuration, frequency:Frequency) -> (PitchAndDuration, Frequency) in
-            return (pitchWrapper, UInt64(Double(frequency) * self.goodnessOfNote(UInt8(absoluteNote(pitchWrapper.pitch)))))
+            return (pitchWrapper, frequency * UInt64(self.goodnessOfNote(UInt8(absoluteNote(pitchWrapper.pitch)))))
         }
         
         return (successorDistribution, prefixLength)
